@@ -1,0 +1,149 @@
+# PropertyOS Vision Document
+
+Version: 1.0
+Status: Draft
+Author: Andrew Evboifo
+Date: July 2026
+
+---
+
+# Vision
+
+PropertyOS is aimed to be a modern cloud-based property management platform designed to simplify the day-to-day operations of landlords and property management companies.
+
+The platform provides a single system for managing residential and commercial properties, tenants, leases, maintenance requests, payments, documents, and operational reporting.
+
+My vision is to eliminate fragmented workflows by replacing spreadsheets, paper records, disconnected software, and manual communication with one intuitive platform that scales from individual landlords to large property management organizations.
+
+---
+
+# Problem Statement
+
+Many landlords and property managers still rely on multiple disconnected tools:
+
+- Excel spreadsheets
+- Paper lease agreements
+- Email
+- Phone calls
+- Text messages
+- Accounting software
+- Calendar applications
+
+This results in:
+
+- Lost information
+- Delayed maintenance
+- Missed rent payments
+- Duplicate data
+- Poor communication
+- Limited reporting
+- Increased operational costs
+
+As portfolios grow, these inefficiencies become increasingly difficult to manage.
+
+---
+
+# Mission
+
+To build an intuitive, secure, and scalable property management platform that enables property professionals to manage their entire business from one centralized system.
+
+---
+
+# Target Users
+
+Primary Users
+
+- Independent landlords
+- Property managers
+- Property management companies
+
+Secondary Users
+
+- Tenants
+- Maintenance technicians
+- Vendors
+- Building owners
+- System administrators
+
+---
+
+# Core Business Goals
+
+PropertyOS should enable users to:
+
+- Manage properties and units
+- Manage tenant information
+- Create and manage leases
+- Track rent payments
+- Handle maintenance requests
+- Store documents securely
+- Communicate with tenants
+- Generate operational reports
+- Monitor occupancy
+- Track financial performance
+
+---
+
+# Product Principles
+
+The system should always be:
+
+Simple
+Easy for non-technical users to operate.
+
+Reliable
+Business-critical information should always be accurate.
+
+Secure
+Protect sensitive tenant and financial information.
+
+Scalable
+Support portfolios ranging from one property to thousands.
+
+Maintainable
+Designed with clean architecture for future growth.
+
+Modern
+Provide an intuitive user experience across desktop and mobile devices.
+
+---
+
+# Long-Term Vision
+
+PropertyOS will evolve beyond traditional property management software by incorporating automation, intelligent reporting, predictive maintenance insights, AI-assisted workflows, and integrations with third-party financial and communication platforms.
+
+The long-term objective is to become a complete operating system for property management businesses.
+
+---
+
+# Success Metrics
+
+A successful MVP should allow a property manager to:
+
+- Create an organization
+- Add properties
+- Add units
+- Register tenants
+- Create leases
+- Record rent payments
+- Submit maintenance requests
+- Generate basic reports
+
+without requiring external spreadsheets or manual record keeping.
+
+---
+
+# Out of Scope (Version 1)
+
+The initial release will not include:
+
+- AI automation
+- Online banking integrations
+- Tax filing
+- Accounting software synchronization
+- IoT smart building integrations
+- Utility billing
+- Marketing websites
+- CRM functionality
+
+These features may be considered in future releases.
