@@ -1,9 +1,8 @@
 # PropertyOS Vision Document
 
-Version: 1.0
-Status: Draft
-Author: Andrew Evboifo
-Date: July 2026
+**Document Version:** 1.0   
+**Author:** Andrew Evboifo  
+**Last Updated:** July 2026
 
 ---
 
