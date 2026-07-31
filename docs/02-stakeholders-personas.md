@@ -1,7 +1,6 @@
 # PropertyOS — Stakeholders & Personas
 
 **Version:** 1.0  
-**Status:** Draft  
 **Author:** Andrew Evboifo  
 **Last Updated:** July 2026
 
