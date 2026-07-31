@@ -1,7 +1,6 @@
 # PropertyOS — Use Cases
 
-**Document Version:** 1.0  
-**Status:** Approved  
+**Document Version:** 1.0   
 **Author:** Andrew Evboifo  
 **Last Updated:** July 2026
 
