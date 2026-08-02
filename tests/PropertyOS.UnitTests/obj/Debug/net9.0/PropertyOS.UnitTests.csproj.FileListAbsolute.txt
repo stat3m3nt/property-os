@@ -3,8 +3,6 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\C
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\testhost.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\testhost.exe
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\xunit.runner.visualstudio.testadapter.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\xunit.runner.reporters.netcoreapp10.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\xunit.runner.utility.netcoreapp10.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.UnitTests.deps.json
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.UnitTests.runtimeconfig.json
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.UnitTests.dll
@@ -103,3 +101,7 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\obj\Debug\net9.0\r
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\obj\Debug\net9.0\PropertyOS.UnitTests.pdb
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\obj\Debug\net9.0\PropertyOS.UnitTests.genruntimeconfig.cache
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\obj\Debug\net9.0\ref\PropertyOS.UnitTests.dll
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\obj\Debug\net9.0\PropertyOS.UnitTests.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.UnitTests.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.Application.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.UnitTests\bin\Debug\net9.0\PropertyOS.Domain.xml

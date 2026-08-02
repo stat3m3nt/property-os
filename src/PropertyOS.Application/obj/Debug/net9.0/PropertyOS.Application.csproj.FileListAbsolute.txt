@@ -14,3 +14,6 @@ C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\obj\Debug\net9.0\P
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\obj\Debug\net9.0\refint\PropertyOS.Application.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\obj\Debug\net9.0\PropertyOS.Application.pdb
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\obj\Debug\net9.0\ref\PropertyOS.Application.dll
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\bin\Debug\net9.0\PropertyOS.Application.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\bin\Debug\net9.0\PropertyOS.Domain.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Application\obj\Debug\net9.0\PropertyOS.Application.xml

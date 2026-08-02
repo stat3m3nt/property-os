@@ -9,8 +9,6 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\n
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Api.exe
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\testhost.exe
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.runner.visualstudio.testadapter.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.runner.reporters.netcoreapp10.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.runner.utility.netcoreapp10.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.deps.json
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.runtimeconfig.json
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.dll
@@ -117,3 +115,10 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\obj\Debug\n
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\obj\Debug\net9.0\PropertyOS.IntegrationTests.pdb
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\obj\Debug\net9.0\PropertyOS.IntegrationTests.genruntimeconfig.cache
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\obj\Debug\net9.0\ref\PropertyOS.IntegrationTests.dll
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\obj\Debug\net9.0\PropertyOS.IntegrationTests.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Api.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Application.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Contracts.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Domain.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.Infrastructure.xml

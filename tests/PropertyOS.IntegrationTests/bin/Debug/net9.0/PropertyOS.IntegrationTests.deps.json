@@ -12,21 +12,21 @@
           "PropertyOS.Api": "1.0.0",
           "coverlet.collector": "6.0.2",
           "xunit": "2.9.2",
-          "xunit.runner.visualstudio": "2.8.2"
+          "xunit.runner.visualstudio": "3.0.0"
         },
         "runtime": {
           "PropertyOS.IntegrationTests.dll": {}
         }
       },
       "coverlet.collector/6.0.2": {},
-      "Microsoft.AspNetCore.OpenApi/9.0.5": {
+      "Microsoft.AspNetCore.OpenApi/9.0.0": {
         "dependencies": {
           "Microsoft.OpenApi": "1.6.17"
         },
         "runtime": {
           "lib/net9.0/Microsoft.AspNetCore.OpenApi.dll": {
-            "assemblyVersion": "9.0.5.0",
-            "fileVersion": "9.0.525.22904"
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.24.52903"
           }
         }
       },
@@ -359,10 +359,10 @@
           }
         }
       },
-      "xunit.runner.visualstudio/2.8.2": {},
+      "xunit.runner.visualstudio/3.0.0": {},
       "PropertyOS.Api/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.OpenApi": "9.0.5",
+          "Microsoft.AspNetCore.OpenApi": "9.0.0",
           "PropertyOS.Application": "1.0.0",
           "PropertyOS.Contracts": "1.0.0",
           "PropertyOS.Infrastructure": "1.0.0"
@@ -428,12 +428,12 @@
       "path": "coverlet.collector/6.0.2",
       "hashPath": "coverlet.collector.6.0.2.nupkg.sha512"
     },
-    "Microsoft.AspNetCore.OpenApi/9.0.5": {
+    "Microsoft.AspNetCore.OpenApi/9.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-yZLOciYlpaOO/mHPOpgeSZTv8Lc7fOOVX40eWJJoGs/S9Ny9CymDuKKQofGE9stXGGM9EEnnuPeq0fhR8kdFfg==",
-      "path": "microsoft.aspnetcore.openapi/9.0.5",
-      "hashPath": "microsoft.aspnetcore.openapi.9.0.5.nupkg.sha512"
+      "sha512": "sha512-FqUK5j1EOPNuFT7IafltZQ3cakqhSwVzH5ZW1MhZDe4pPXs9sJ2M5jom1Omsu+mwF2tNKKlRAzLRHQTZzbd+6Q==",
+      "path": "microsoft.aspnetcore.openapi/9.0.0",
+      "hashPath": "microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512"
     },
     "Microsoft.CodeCoverage/17.12.0": {
       "type": "package",
@@ -533,12 +533,12 @@
       "path": "xunit.extensibility.execution/2.9.2",
       "hashPath": "xunit.extensibility.execution.2.9.2.nupkg.sha512"
     },
-    "xunit.runner.visualstudio/2.8.2": {
+    "xunit.runner.visualstudio/3.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-vm1tbfXhFmjFMUmS4M0J0ASXz3/U5XvXBa6DOQUL3fEz4Vt6YPhv+ESCarx6M6D+9kJkJYZKCNvJMas1+nVfmQ==",
-      "path": "xunit.runner.visualstudio/2.8.2",
-      "hashPath": "xunit.runner.visualstudio.2.8.2.nupkg.sha512"
+      "sha512": "sha512-HggUqjQJe8PtDxcP25Q+CnR6Lz4oX3GElhD9V4oU2+75x9HI6A6sxbfKGS4UwU4t4yJaS9fBmAuriz8bQApNjw==",
+      "path": "xunit.runner.visualstudio/3.0.0",
+      "hashPath": "xunit.runner.visualstudio.3.0.0.nupkg.sha512"
     },
     "PropertyOS.Api/1.0.0": {
       "type": "project",

@@ -35,3 +35,9 @@ C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\obj\Debug\net9.0\refint\Pr
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\obj\Debug\net9.0\PropertyOS.Api.pdb
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\obj\Debug\net9.0\PropertyOS.Api.genruntimeconfig.cache
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\obj\Debug\net9.0\ref\PropertyOS.Api.dll
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Api.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Application.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Infrastructure.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Contracts.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Domain.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\obj\Debug\net9.0\PropertyOS.Api.xml

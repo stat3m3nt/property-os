@@ -13,6 +13,7 @@
         "packagesPath": "C:\\Users\\&rew\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Application\\obj\\",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -39,6 +40,7 @@
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -53,6 +55,13 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "centralPackageVersions": {
+            "coverlet.collector": "6.0.2",
+            "Microsoft.AspNetCore.OpenApi": "9.0.0",
+            "Microsoft.NET.Test.Sdk": "17.12.0",
+            "xunit": "2.9.2",
+            "xunit.runner.visualstudio": "3.0.0"
+          },
           "imports": [
             "net461",
             "net462",
@@ -82,6 +91,7 @@
         "packagesPath": "C:\\Users\\&rew\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Domain\\obj\\",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -104,6 +114,7 @@
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -118,6 +129,13 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "centralPackageVersions": {
+            "coverlet.collector": "6.0.2",
+            "Microsoft.AspNetCore.OpenApi": "9.0.0",
+            "Microsoft.NET.Test.Sdk": "17.12.0",
+            "xunit": "2.9.2",
+            "xunit.runner.visualstudio": "3.0.0"
+          },
           "imports": [
             "net461",
             "net462",
@@ -147,6 +165,7 @@
         "packagesPath": "C:\\Users\\&rew\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
+        "centralPackageVersionsManagementEnabled": true,
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
@@ -176,6 +195,7 @@
           }
         },
         "warningProperties": {
+          "allWarningsAsErrors": true,
           "warnAsError": [
             "NU1605"
           ]
@@ -190,6 +210,13 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "centralPackageVersions": {
+            "coverlet.collector": "6.0.2",
+            "Microsoft.AspNetCore.OpenApi": "9.0.0",
+            "Microsoft.NET.Test.Sdk": "17.12.0",
+            "xunit": "2.9.2",
+            "xunit.runner.visualstudio": "3.0.0"
+          },
           "imports": [
             "net461",
             "net462",
