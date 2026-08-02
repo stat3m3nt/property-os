@@ -18,4 +18,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PropertyOS.Application\PropertyOS.Application.csproj" />
+    <ProjectReference Include="..\..\src\PropertyOS.Domain\PropertyOS.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

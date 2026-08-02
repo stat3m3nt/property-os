@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net9.0": {}
+    "net9.0": {
+      "PropertyOS.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/PropertyOS.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PropertyOS.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "PropertyOS.Domain/1.0.0": {
+      "type": "project",
+      "path": "../PropertyOS.Domain/PropertyOS.Domain.csproj",
+      "msbuildProject": "../PropertyOS.Domain/PropertyOS.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net9.0": []
+    "net9.0": [
+      "PropertyOS.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\&rew\\.nuget\\packages\\": {},
@@ -38,7 +57,11 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Domain\\PropertyOS.Domain.csproj": {
+              "projectPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Domain\\PropertyOS.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

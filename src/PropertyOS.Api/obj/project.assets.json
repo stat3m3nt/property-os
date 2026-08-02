@@ -33,6 +33,53 @@
             "related": ".pdb;.xml"
           }
         }
+      },
+      "PropertyOS.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "PropertyOS.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PropertyOS.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PropertyOS.Application.dll": {}
+        }
+      },
+      "PropertyOS.Contracts/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/PropertyOS.Contracts.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PropertyOS.Contracts.dll": {}
+        }
+      },
+      "PropertyOS.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/PropertyOS.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PropertyOS.Domain.dll": {}
+        }
+      },
+      "PropertyOS.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "PropertyOS.Application": "1.0.0",
+          "PropertyOS.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PropertyOS.Infrastructure.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PropertyOS.Infrastructure.dll": {}
+        }
       }
     }
   },
@@ -67,11 +114,34 @@
         "microsoft.openapi.1.6.17.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
+    },
+    "PropertyOS.Application/1.0.0": {
+      "type": "project",
+      "path": "../PropertyOS.Application/PropertyOS.Application.csproj",
+      "msbuildProject": "../PropertyOS.Application/PropertyOS.Application.csproj"
+    },
+    "PropertyOS.Contracts/1.0.0": {
+      "type": "project",
+      "path": "../PropertyOS.Contracts/PropertyOS.Contracts.csproj",
+      "msbuildProject": "../PropertyOS.Contracts/PropertyOS.Contracts.csproj"
+    },
+    "PropertyOS.Domain/1.0.0": {
+      "type": "project",
+      "path": "../PropertyOS.Domain/PropertyOS.Domain.csproj",
+      "msbuildProject": "../PropertyOS.Domain/PropertyOS.Domain.csproj"
+    },
+    "PropertyOS.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../PropertyOS.Infrastructure/PropertyOS.Infrastructure.csproj",
+      "msbuildProject": "../PropertyOS.Infrastructure/PropertyOS.Infrastructure.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "Microsoft.AspNetCore.OpenApi >= 9.0.5"
+      "Microsoft.AspNetCore.OpenApi >= 9.0.5",
+      "PropertyOS.Application >= 1.0.0",
+      "PropertyOS.Contracts >= 1.0.0",
+      "PropertyOS.Infrastructure >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -105,7 +175,17 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Application\\PropertyOS.Application.csproj": {
+              "projectPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Application\\PropertyOS.Application.csproj"
+            },
+            "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Contracts\\PropertyOS.Contracts.csproj": {
+              "projectPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Contracts\\PropertyOS.Contracts.csproj"
+            },
+            "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Infrastructure\\PropertyOS.Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\&rew\\Projects\\property-os\\src\\PropertyOS.Infrastructure\\PropertyOS.Infrastructure.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
