@@ -132,7 +132,7 @@ Enum webhook_status {
 // =========================================================================
 
 Table organizations {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   name varchar(255) [not null]
   slug varchar(100) [not null, unique]
   legal_name varchar(255)
@@ -154,7 +154,7 @@ Table organizations {
 }
 
 Table organization_settings {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null, unique]
   default_currency varchar(3) [not null]
   timezone varchar(100) [not null, default: 'America/Toronto']
@@ -177,10 +177,9 @@ Table organization_settings {
 // =========================================================================
 
 Table users {
-  id uuid [pk, default: `gen_random_uuid()`]
-  organization_id uuid [not null]
+  id uuid [pk, default: `uuid_generate_v7()`]
   supabase_auth_id uuid [not null, unique, note: 'Maps to Supabase Auth user']
-  email varchar(255) [not null]
+  email varchar(255) [not null, unique, note: 'Globally unique — a user is one platform identity that may belong to multiple organizations via user_organization_roles']
   first_name varchar(100) [not null]
   last_name varchar(100) [not null]
   phone varchar(30)
@@ -194,13 +193,13 @@ Table users {
   updated_by uuid
 
   indexes {
-    (organization_id, email) [unique]
+    email [unique]
     supabase_auth_id [unique]
   }
 }
 
 Table roles {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [note: 'null = system-defined global role']
   name varchar(100) [not null]
   description varchar(500)
@@ -216,7 +215,7 @@ Table roles {
 }
 
 Table permissions {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   code varchar(150) [not null, unique, note: 'e.g. lease.create, invoice.void']
   description varchar(500)
   domain varchar(100) [not null, note: 'e.g. finance, maintenance, property']
@@ -230,7 +229,7 @@ Table permissions {
 }
 
 Table role_permissions {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   role_id uuid [not null]
   permission_id uuid [not null]
   created_at timestamptz [not null, default: `now()`]
@@ -241,21 +240,22 @@ Table role_permissions {
   }
 }
 
-Table user_roles {
-  id uuid [pk, default: `gen_random_uuid()`]
+Table user_organization_roles {
+  id uuid [pk, default: `uuid_generate_v7()`]
   user_id uuid [not null]
   role_id uuid [not null]
-  organization_id uuid [not null]
+  organization_id uuid [not null, note: 'The org this membership/role grant applies to — a user may have one row per org, each with its own role']
   assigned_at timestamptz [not null, default: `now()`]
   created_by uuid
 
   indexes {
-    (user_id, role_id) [unique]
+    (user_id, organization_id, role_id) [unique]
+    (user_id, organization_id)
   }
 }
 
 Table user_invitations {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   email varchar(255) [not null]
   role_id uuid [not null]
@@ -274,7 +274,7 @@ Table user_invitations {
 }
 
 Table password_resets {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   user_id uuid [not null]
   token varchar(255) [not null, unique]
   expires_at timestamptz [not null]
@@ -292,7 +292,7 @@ Table password_resets {
 // =========================================================================
 
 Table properties {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   name varchar(255) [not null]
   property_type property_type [not null]
@@ -313,7 +313,7 @@ Table properties {
 }
 
 Table property_addresses {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [not null, unique]
   line1 varchar(255) [not null]
@@ -334,7 +334,7 @@ Table property_addresses {
 }
 
 Table property_images {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [not null]
   storage_path varchar(500) [not null, note: 'Supabase Storage object key']
@@ -350,7 +350,7 @@ Table property_images {
 }
 
 Table buildings {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [not null]
   name varchar(255) [not null]
@@ -369,7 +369,7 @@ Table buildings {
 }
 
 Table floors {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   building_id uuid [not null]
   floor_number int [not null]
@@ -383,7 +383,7 @@ Table floors {
 }
 
 Table units {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [not null]
   building_id uuid
@@ -410,7 +410,7 @@ Table units {
 }
 
 Table amenities {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   name varchar(150) [not null]
   description varchar(500)
@@ -423,7 +423,7 @@ Table amenities {
 }
 
 Table unit_amenities {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   unit_id uuid [not null]
   amenity_id uuid [not null]
@@ -439,7 +439,7 @@ Table unit_amenities {
 // =========================================================================
 
 Table tenants {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   user_id uuid [note: 'nullable — tenant may not have portal login']
   first_name varchar(100) [not null]
@@ -461,7 +461,7 @@ Table tenants {
 }
 
 Table tenant_emergency_contacts {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   tenant_id uuid [not null]
   full_name varchar(200) [not null]
@@ -477,7 +477,7 @@ Table tenant_emergency_contacts {
 }
 
 Table tenant_documents {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   tenant_id uuid [not null]
   document_id uuid [not null]
@@ -492,7 +492,7 @@ Table tenant_documents {
 }
 
 Table occupancies {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   unit_id uuid [not null]
   tenant_id uuid [not null]
@@ -517,7 +517,7 @@ Table occupancies {
 // =========================================================================
 
 Table leases {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   unit_id uuid [not null]
   lease_number varchar(50) [not null]
@@ -543,7 +543,7 @@ Table leases {
 }
 
 Table lease_tenants {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   lease_id uuid [not null]
   tenant_id uuid [not null]
@@ -556,7 +556,7 @@ Table lease_tenants {
 }
 
 Table lease_documents {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   lease_id uuid [not null]
   document_id uuid [not null]
@@ -570,7 +570,7 @@ Table lease_documents {
 }
 
 Table security_deposits {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   lease_id uuid [not null, unique]
   amount decimal(12,2) [not null]
@@ -588,7 +588,7 @@ Table security_deposits {
 }
 
 Table lease_renewals {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   original_lease_id uuid [not null]
   new_lease_id uuid [not null, unique]
@@ -605,7 +605,7 @@ Table lease_renewals {
 }
 
 Table lease_amendments{
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   lease_id uuid [not null]
   amendment_number varchar(50) [not null]
   organization_id uuid [not null]
@@ -629,7 +629,7 @@ Table lease_amendments{
 // =========================================================================
 
 Table rent_schedules {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   lease_id uuid [not null]
   frequency varchar(20) [not null, default: 'monthly']
@@ -647,7 +647,7 @@ Table rent_schedules {
 }
 
 Table invoices {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   lease_id uuid [not null]
   invoice_number varchar(50) [not null]
@@ -674,7 +674,7 @@ Table invoices {
 }
 
 Table invoice_line_items {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   invoice_id uuid [not null]
   description varchar(255) [not null]
@@ -690,7 +690,7 @@ Table invoice_line_items {
 }
 
 Table payment_methods {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   tenant_id uuid [not null]
   method_type payment_method_type [not null]
@@ -707,7 +707,7 @@ Table payment_methods {
 }
 
 Table payments {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   invoice_id uuid [not null]
   payment_method_id uuid
@@ -728,7 +728,7 @@ Table payments {
 }
 
 Table transactions {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   payment_id uuid
   transaction_type varchar(30) [not null, note: 'charge, refund, chargeback, adjustment']
@@ -746,7 +746,7 @@ Table transactions {
 }
 
 Table late_fees {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   invoice_id uuid [not null]
   invoice_line_item_id uuid [note: 'nullable — set once this assessed fee has been billed as a line item, so the two records can never silently diverge']
@@ -768,7 +768,7 @@ Table late_fees {
 // =========================================================================
 
 Table maintenance_categories {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   name varchar(150) [not null]
   description varchar(500)
@@ -781,7 +781,7 @@ Table maintenance_categories {
 }
 
 Table maintenance_priorities {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   name varchar(50) [not null, note: 'low, medium, high, emergency']
   sla_hours int [not null]
@@ -793,7 +793,7 @@ Table maintenance_priorities {
 }
 
 Table maintenance_requests {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [not null, note: 'always set — enables common-area requests (roof, lobby, elevator, parking lot)']
   unit_id uuid [note: 'nullable — null for common-area / building-wide issues not tied to a specific unit']
@@ -824,7 +824,7 @@ Table maintenance_requests {
 }
 
 Table maintenance_status_history {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   maintenance_request_id uuid [not null]
   previous_status maintenance_status
@@ -842,7 +842,7 @@ Table maintenance_status_history {
 }
 
 Table maintenance_images {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   maintenance_request_id uuid [not null]
   storage_path varchar(500) [not null]
@@ -856,7 +856,7 @@ Table maintenance_images {
 }
 
 Table vendors {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   company_name varchar(255) [not null]
   contact_name varchar(200)
@@ -877,7 +877,7 @@ Table vendors {
 }
 
 Table work_orders {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   maintenance_request_id uuid [not null]
   work_order_number varchar(50) [not null]
@@ -900,7 +900,7 @@ Table work_orders {
 }
 
 Table vendor_assignments {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   work_order_id uuid [not null]
   vendor_id uuid [not null]
@@ -918,7 +918,7 @@ Table vendor_assignments {
 // =========================================================================
 
 Table folders {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   parent_folder_id uuid [note: 'self-reference for nested folders']
   name varchar(255) [not null]
@@ -933,7 +933,7 @@ Table folders {
 }
 
 Table documents {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   folder_id uuid
   owner_type document_owner_type [not null]
@@ -959,7 +959,7 @@ Table documents {
 }
 
 Table attachments {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   document_id uuid [not null]
   related_entity_type varchar(50) [not null, note: 'message, announcement, maintenance_request']
@@ -977,7 +977,7 @@ Table attachments {
 // =========================================================================
 
 Table notification_templates {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [note: 'null = global system template']
   code varchar(150) [not null]
   channel notification_channel [not null]
@@ -992,7 +992,7 @@ Table notification_templates {
 }
 
 Table notifications {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   user_id uuid
   tenant_id uuid
@@ -1012,7 +1012,7 @@ Table notifications {
 }
 
 Table messages {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   sender_user_id uuid
   sender_tenant_id uuid
@@ -1032,7 +1032,7 @@ Table messages {
 }
 
 Table announcements {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   property_id uuid [note: 'nullable — org-wide if null']
   title varchar(255) [not null]
@@ -1057,7 +1057,7 @@ Table announcements {
 // =========================================================================
 
 Table system_settings {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   setting_key varchar(150) [not null, unique]
   setting_value text
   value_type varchar(20) [not null, default: 'string']
@@ -1072,7 +1072,7 @@ Table system_settings {
 }
 
 Table audit_logs {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid
   actor_user_id uuid
   entity_type varchar(100) [not null]
@@ -1090,7 +1090,7 @@ Table audit_logs {
 }
 
 Table activity_logs {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   actor_user_id uuid
   actor_tenant_id uuid
@@ -1113,7 +1113,7 @@ Table activity_logs {
 // =========================================================================
 
 Table billing_plans {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   code varchar(50) [not null, unique, note: 'starter, professional, enterprise']
   name varchar(100) [not null]
   billing_interval billing_interval [not null]
@@ -1132,7 +1132,7 @@ Table billing_plans {
 }
 
 Table organization_subscriptions {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   plan_id uuid [not null]
   status subscription_status [not null, default: 'trialing']
@@ -1152,7 +1152,7 @@ Table organization_subscriptions {
 }
 
 Table platform_invoices {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   organization_subscription_id uuid
   stripe_invoice_id varchar(255) [unique]
@@ -1175,7 +1175,7 @@ Table platform_invoices {
 // =========================================================================
 
 Table api_keys {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   name varchar(150) [not null]
   key_prefix varchar(20) [not null, note: 'shown to user for identification, e.g. pk_live_ab12']
@@ -1194,7 +1194,7 @@ Table api_keys {
 }
 
 Table user_sessions {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   user_id uuid [not null]
   organization_id uuid [not null]
   session_token_hash varchar(255) [not null, unique]
@@ -1211,7 +1211,7 @@ Table user_sessions {
 }
 
 Table login_attempts {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [note: 'nullable — may be unresolved if the email does not match any account']
   email varchar(255) [not null]
   user_id uuid [note: 'nullable — set only if the attempt resolved to a known user']
@@ -1235,7 +1235,7 @@ Table login_attempts {
 // =========================================================================
 
 Table feature_flags {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   code varchar(150) [not null, unique]
   description varchar(500)
   default_enabled boolean [not null, default: false]
@@ -1248,7 +1248,7 @@ Table feature_flags {
 }
 
 Table organization_feature_flags {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [not null]
   feature_flag_id uuid [not null]
   is_enabled boolean [not null]
@@ -1261,7 +1261,7 @@ Table organization_feature_flags {
 }
 
 Table background_jobs {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [note: 'nullable — some jobs are system-wide, not org-scoped']
   job_type varchar(150) [not null, note: 'e.g. generate_monthly_invoices, send_reminder_email, process_stripe_webhook']
   status job_status [not null, default: 'queued']
@@ -1281,8 +1281,25 @@ Table background_jobs {
   }
 }
 
+Table idempotency_keys {
+  id uuid [pk, default: `uuid_generate_v7()`]
+  idempotency_key uuid [not null, note: 'Client-supplied value from the Idempotency-Key request header']
+  organization_id uuid [not null]
+  request_path varchar(255) [not null, note: 'Endpoint the key was issued against, e.g. POST /api/v1/payments/process']
+  response_hash varchar(64) [not null, note: 'Hash of the normalized request body — detects a reused key sent with a different payload']
+  response_body jsonb [not null]
+  status_code int [not null]
+  created_at timestamptz [not null, default: `now()`]
+  expires_at timestamptz [not null, note: 'created_at + 24 hours; a scheduled job purges expired rows']
+
+  indexes {
+    (idempotency_key, organization_id) [unique]
+    expires_at
+  }
+}
+
 Table webhook_events {
-  id uuid [pk, default: `gen_random_uuid()`]
+  id uuid [pk, default: `uuid_generate_v7()`]
   organization_id uuid [note: 'nullable — resolved after parsing payload; not all events map to a single org']
   source varchar(50) [not null, note: 'stripe, supabase, etc']
   event_type varchar(150) [not null]
@@ -1308,13 +1325,12 @@ Table webhook_events {
 Ref: organization_settings.organization_id > organizations.id
 
 // Identity & Access
-Ref: users.organization_id > organizations.id
 Ref: roles.organization_id > organizations.id
 Ref: role_permissions.role_id > roles.id
 Ref: role_permissions.permission_id > permissions.id
-Ref: user_roles.user_id > users.id
-Ref: user_roles.role_id > roles.id
-Ref: user_roles.organization_id > organizations.id
+Ref: user_organization_roles.user_id > users.id
+Ref: user_organization_roles.role_id > roles.id
+Ref: user_organization_roles.organization_id > organizations.id
 Ref: user_invitations.organization_id > organizations.id
 Ref: user_invitations.role_id > roles.id
 Ref: user_invitations.invited_by > users.id
@@ -1458,6 +1474,7 @@ Ref: organization_feature_flags.feature_flag_id > feature_flags.id
 Ref: organization_feature_flags.updated_by > users.id
 Ref: background_jobs.organization_id > organizations.id
 Ref: webhook_events.organization_id > organizations.id
+Ref: idempotency_keys.organization_id > organizations.id
 
 // Late fee <-> billed line item traceability
 Ref: late_fees.invoice_line_item_id > invoice_line_items.id
@@ -1469,7 +1486,11 @@ Ref: late_fees.invoice_line_item_id > invoice_line_items.id
 // =========================================================================
 //
 // EXTENSIONS
-//   pgcrypto   -- for gen_random_uuid()
+//   pg_uuidv7  -- for uuid_generate_v7(), used as the default on every PK
+//                 (gives time-ordered insert locality; see API design §4.4).
+//                 If pg_uuidv7 is unavailable on the target Postgres version,
+//                 substitute an equivalent SQL/plpgsql uuid_generate_v7()
+//                 function — see propertyos_architecture_review_v2.md.
 //   btree_gist -- for the occupancies exclusion constraint
 //
 // PARTIAL UNIQUE INDEXES

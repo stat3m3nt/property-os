@@ -17,11 +17,11 @@ No feature in this roadmap is invented. Every sprint delivers functionality that
 
 | Document | Relationship to this roadmap |
 |---|---|
-| `docs/06-database-design.md` | Defines the ~40 entities each sprint incrementally implements |
-| `docs/07-api-design.md` | Defines the endpoint contracts each sprint's backend work delivers |
-| `docs/05-multi-tenancy.md` | RLS model implemented in Sprint 1 and enforced throughout |
-| `docs/06-authentication-design.md` | Supabase Auth/JWT model implemented in Sprint 1–2 |
-| `docs/09-testing-strategy.md` (referenced) | Detailed test-plan companion to Section 13 of this document |
+| `docs/05-system-design.md` | Defines the overall architecture, technology stack, and system components implemented throughout each sprint. |
+| `docs/06-database-design.md` | Defines the database schema, entities, relationships, constraints, and migrations implemented incrementally across the sprints. |
+| `docs/07-api-design.md` | Defines the REST API contracts, endpoints, authentication, validation, and backend services delivered throughout the implementation. |
+| `docs/04-user-stories.md` | Provides the functional backlog used to derive sprint tasks and feature implementation priorities. |
+| `docs/01-business-requirements.md` | Defines the business requirements and business rules that guide development and acceptance criteria for each sprint. |
 
 ---
 

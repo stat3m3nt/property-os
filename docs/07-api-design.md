@@ -194,7 +194,7 @@ public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyRequest
 
 ### 3.5 Role Resolution
 
-Roles are organization-scoped (a user may hold different roles in different organizations, modeled via `UserOrganizationRoles`). Built-in roles:
+Roles are organization-scoped (a user may hold different roles in different organizations, modeled via `UserOrganizationRoles`). `Users` rows are platform-level identities with no `organization_id` column of their own; every user-to-org relationship — including a user's *first* organization — is a row in `UserOrganizationRoles` (DB table: `user_organization_roles`), keyed on `(user_id, organization_id, role_id)`. A JWT's `org_id` claim (§3.3) reflects the user's *active* organization for that session, not their only one. Built-in roles:
 
 | Role | Description |
 |---|---|
@@ -248,7 +248,7 @@ All primary keys are `UUID` (`uuid_generate_v7()` at the database layer for time
 
 ### 4.5 Idempotency
 
-State-changing `POST` operations that trigger financial or external-system side effects (`Process Payment`, `Void Invoice`, `Generate Monthly Rent`, `Process Stripe Webhook`) require an `Idempotency-Key` request header (a client-generated UUID). The API persists `(idempotency_key, organization_id, response_hash, response_body, status_code)` in an `IdempotencyKeys` table for 24 hours. A repeated request with the same key returns the original cached response with header `Idempotency-Replayed: true` rather than re-executing the operation.
+State-changing `POST` operations that trigger financial or external-system side effects (`Process Payment`, `Void Invoice`, `Generate Monthly Rent`, `Process Stripe Webhook`) require an `Idempotency-Key` request header (a client-generated UUID). The API persists `(idempotency_key, organization_id, response_hash, response_body, status_code)` in an `IdempotencyKeys` table (DB: `idempotency_keys`) for 24 hours, uniquely keyed on `(idempotency_key, organization_id)`. A repeated request with the same key returns the original cached response with header `Idempotency-Replayed: true` rather than re-executing the operation.
 
 ### 4.6 PATCH vs. PUT
 
@@ -519,7 +519,7 @@ Each domain section documents its resource model, endpoint summary table, and fu
 
 ### 7.2 Identity & Access
 
-**Backing tables:** `Users`, `UserOrganizationRoles`, `Roles`, `Permissions`, `RolePermissions`, `UserSessions`, `LoginAttempts`, `ApiKeys`
+**Backing tables:** `Users`, `UserOrganizationRoles` (DB: `user_organization_roles`), `Roles`, `Permissions`, `RolePermissions`, `UserSessions`, `LoginAttempts`, `ApiKeys`
 
 #### Endpoint Summary
 
@@ -1736,20 +1736,20 @@ sequenceDiagram
 | Enum | Values |
 |---|---|
 | `PropertyType` | `RESIDENTIAL`, `COMMERCIAL`, `MIXED_USE` |
-| `UnitStatus` | `VACANT`, `OCCUPIED`, `UNDER_MAINTENANCE`, `OFFLINE` |
+| `UnitStatus` | `VACANT`, `OCCUPIED`, `UNDER_MAINTENANCE`, `RESERVED`, `OFFLINE` |
 | `LeaseType` | `FIXED_TERM`, `MONTH_TO_MONTH` |
-| `LeaseStatus` | `DRAFT`, `ACTIVE`, `RENEWED`, `TERMINATED`, `EXPIRED` |
-| `InvoiceStatus` | `DRAFT`, `SENT`, `PARTIALLY_PAID`, `PAID`, `OVERDUE`, `VOID` |
-| `PaymentStatus` | `PENDING`, `SUCCEEDED`, `FAILED`, `REFUNDED`, `PARTIALLY_REFUNDED` |
+| `LeaseStatus` | `DRAFT`, `PENDING_SIGNATURE`, `ACTIVE`, `PENDING_RENEWAL`, `RENEWED`, `EXPIRED`, `TERMINATED` |
+| `InvoiceStatus` | `DRAFT`, `ISSUED`, `PAID`, `PARTIALLY_PAID`, , `OVERDUE`, `VOID` |
+| `PaymentStatus` | `PENDING`, `COMPLETED`, `FAILED`, `REFUNDED`, `DISPUTED` |
 | `PaymentType` | `STRIPE_CARD`, `STRIPE_ACH`, `MANUAL_CASH`, `MANUAL_CHEQUE`, `MANUAL_ETRANSFER` |
 | `MaintenancePriority` | `LOW`, `MEDIUM`, `HIGH`, `EMERGENCY` |
-| `MaintenanceStatus` | `SUBMITTED`, `ACKNOWLEDGED`, `SCHEDULED`, `IN_PROGRESS`, `COMPLETED`, `CLOSED`, `CANCELLED` |
+| `MaintenanceStatus` | `OPEN`, `TRIAGED`, `ASSIGNED`, `IN_PROGRESS`, `ON_HOLD`, `COMPLETED`, `CANCELLED` |
 | `WorkOrderStatus` | `PENDING`, `ASSIGNED`, `IN_PROGRESS`, `COMPLETED`, `CANCELLED` |
 | `AnnouncementAudience` | `ORGANIZATION`, `PROPERTY`, `BUILDING`, `UNIT_TENANTS` |
 | `NotificationChannel` | `EMAIL`, `PUSH`, `SMS` |
 | `SecurityDepositStatus` | `HELD`, `PARTIALLY_REFUNDED`, `REFUNDED`, `FORFEITED` |
-| `BackgroundJobStatus` | `QUEUED`, `RUNNING`, `SUCCEEDED`, `FAILED` |
-| `OrganizationSubscriptionStatus` | `TRIALING`, `ACTIVE`, `PAST_DUE`, `CANCELLED` |
+| `BackgroundJobStatus` | `QUEUED`, `PROCESSING`, `COMPLETED`, `FAILED`, `RETRYING`, `CANCELLED` |
+| `OrganizationSubscriptionStatus` | `TRIALING`, `ACTIVE`, `PAST_DUE`, `CANCELLED`, `PAUSED` |
 
 ---
 
