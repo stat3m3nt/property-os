@@ -1,6 +1,7 @@
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\bin\Debug\net9.0\PropertyOS.Domain.deps.json
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\bin\Debug\net9.0\PropertyOS.Domain.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\bin\Debug\net9.0\PropertyOS.Domain.pdb
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\bin\Debug\net9.0\PropertyOS.Domain.xml
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.AssemblyInfoInputs.cache
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.AssemblyInfo.cs
@@ -8,7 +9,6 @@ C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\Proper
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.sourcelink.json
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\refint\PropertyOS.Domain.dll
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.xml
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.pdb
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\ref\PropertyOS.Domain.dll
-C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\bin\Debug\net9.0\PropertyOS.Domain.xml
-C:\Users\&rew\Projects\property-os\src\PropertyOS.Domain\obj\Debug\net9.0\PropertyOS.Domain.xml

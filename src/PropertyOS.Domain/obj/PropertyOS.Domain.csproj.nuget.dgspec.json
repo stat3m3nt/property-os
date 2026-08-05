@@ -53,8 +53,8 @@
           "targetAlias": "net9.0",
           "centralPackageVersions": {
             "coverlet.collector": "6.0.2",
-            "Microsoft.AspNetCore.OpenApi": "9.0.0",
             "Microsoft.NET.Test.Sdk": "17.12.0",
+            "Swashbuckle.AspNetCore": "10.2.3",
             "xunit": "2.9.2",
             "xunit.runner.visualstudio": "3.0.0"
           },
