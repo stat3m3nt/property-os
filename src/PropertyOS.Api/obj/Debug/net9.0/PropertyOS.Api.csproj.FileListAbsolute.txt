@@ -7,10 +7,8 @@ C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyO
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Api.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Api.pdb
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Api.xml
+C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\Microsoft.OpenApi.dll
-C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Application.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Contracts.dll
 C:\Users\&rew\Projects\property-os\src\PropertyOS.Api\bin\Debug\net9.0\PropertyOS.Domain.dll

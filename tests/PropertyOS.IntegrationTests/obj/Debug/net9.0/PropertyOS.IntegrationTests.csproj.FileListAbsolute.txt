@@ -15,6 +15,7 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\n
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.pdb
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\PropertyOS.IntegrationTests.xml
+C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.VisualStudio.CodeCoverage.Shim.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.OpenApi.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.TestPlatform.CoreUtilities.dll
@@ -25,9 +26,6 @@ C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\n
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.TestPlatform.Utilities.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Microsoft.VisualStudio.TestPlatform.Common.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Newtonsoft.Json.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.assert.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.core.dll
 C:\Users\&rew\Projects\property-os\tests\PropertyOS.IntegrationTests\bin\Debug\net9.0\xunit.execution.dotnet.dll
