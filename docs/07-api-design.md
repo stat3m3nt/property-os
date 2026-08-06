@@ -48,7 +48,7 @@ This specification does not introduce any capability that is not backed by an ex
    17. Webhook Events & Stripe Webhook Endpoint
    18. System Settings
 8. Security Controls
-9. OpenAPI / Swagger Integration
+9. OpenAPI Integration
 10. Sequence Diagrams
 11. Appendix A — Permission Matrix
 12. Appendix B — Enumerations
@@ -1458,14 +1458,13 @@ The following table consolidates every non-CRUD "action" endpoint referenced acr
 
 ---
 
-## 9. OpenAPI / Swagger Integration
+## 9. OpenAPI Integration
 
-PropertyOS generates its OpenAPI 3.0 specification directly from the ASP.NET Core Web API project using `Swashbuckle.AspNetCore`.
+PropertyOS generates its OpenAPI 3.0 specification directly from the ASP.NET Core Web API project using ASP.NET core's native OpenAPI support (`Microsoft.AspNetCore.OpenApi`), wired up via `builder.Services.AddOpenApi()` and exposed through `app.MapOpenApi()`.
 
 ### 9.1 XML Documentation Comments
 
-Every controller action, request DTO, and response DTO carries `///` XML doc comments (`<summary>`, `<remarks>`, `<param>`, `<returns>`), and the project file enables `<GenerateDocumentationFile>true</GenerateDocumentationFile>` so Swashbuckle can surface these directly in the generated spec:
-
+Every controller action, request DTO, and response DTO carries `///` XML doc comments (`<summary>`, `<remarks>`, `<param>`, `<returns>`), and the project file enables `<GenerateDocumentationFile>true</GenerateDocumentationFile>` so the native OpenAPI generator can surface these directly in the generated spec:
 ```csharp
 /// <summary>
 /// Creates a new property owned by the caller's organization.
@@ -1487,33 +1486,58 @@ public async Task<IActionResult> Create([FromBody] CreatePropertyRequest request
 
 ### 9.2 Example Generation
 
-Request/response examples throughout Swagger UI are generated via `Swashbuckle.AspNetCore.Filters`' `[SwaggerRequestExample]` / `[SwaggerResponseExample]` attributes, backed by dedicated `IExamplesProvider<T>` classes per DTO — ensuring the same realistic example values shown in this document (Section 7) are what a developer sees interactively in `/swagger`.
+Request/response examples in the generated OpenAPI document are attached via custom `IOpenApiSchemaTransformer` implementations registered with `AddOpenApi()`, one per DTO — ensuring the same realistic example values shown in this document (Section 7) are what a developer sees when inspecting the schema at `/openapi/v1.json` or through any OpenAPI-aware client (Postman, Insomnia, or the generated TypeScript client).
 
-### 9.3 JWT Authorization in Swagger UI
+### 9.3 JWT Bearer Security Scheme
 
-The Swagger UI is configured with a bearer security scheme so developers can authenticate once and exercise protected endpoints interactively:
+
+The generated OpenAPI document is configured with a bearer security scheme, added via a custom `IOpenApiDocumentTransformer`, so any OpenAPI-aware client can authenticate and exercise protected endpoints:
 
 ```csharp
-options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+internal sealed class BearerSecuritySchemeTransformer : IOpenApiDocumentTransformer
 {
-    Name = "Authorization",
-    Type = SecuritySchemeType.Http,
-    Scheme = "bearer",
-    BearerFormat = "JWT",
-    In = ParameterLocation.Header,
-    Description = "Paste a Supabase-issued JWT (without the 'Bearer ' prefix)."
-});
-options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    public Task TransformAsync(
+        OpenApiDocument document,
+        OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var bearerScheme = new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Paste a Supabase-issued JWT (without the 'Bearer ' prefix)."
+        };
+
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes["Bearer"] = bearerScheme;
+
+        foreach (var operation in document.Paths.Values.SelectMany(p => p.Operations.Values))
+        {
+            operation.Security.Add(new OpenApiSecurityRequirement
+            {
+                [bearerScheme] = Array.Empty<string>()
+            });
+        }
+
+        return Task.CompletedTask;
+    }
+}
+
+// Program.cs
+builder.Services.AddOpenApi(options =>
 {
-    { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
 });
 ```
 
-Once a developer clicks **Authorize** and supplies a token, every subsequent "Try it out" request in Swagger UI automatically carries the `Authorization: Bearer <token>` header, exercising the full authentication/authorization pipeline described in Section 3 exactly as a real client would.
+With the bearer scheme declared in the OpenAPI document, any client that reads the spec — the generated TypeScript client, Postman, or an optional interactive UI such as Scalar — can prompt for a token and attach the `Authorization: Bearer <token>` header automatically, exercising the full authentication/authorization pipeline described in Section 3 exactly as a real client would.
 
 ### 9.4 Spec Publishing
 
-The generated `swagger.json` is published at `/swagger/v1/swagger.json` in non-production environments and is used to generate the strongly-typed TypeScript API client consumed by the Next.js frontend (via `openapi-typescript-codegen`) and the React Native mobile app, guaranteeing the frontend, mobile, and backend never drift out of contract sync.
+The generated OpenAPI document is published at `/openapi/v1.json` (via `app.MapOpenApi()`) in non-production environments and is used to generate the strongly-typed TypeScript API client consumed by the Next.js frontend (via `openapi-typescript-codegen`) and the React Native mobile app, guaranteeing the frontend, mobile, and backend never drift out of contract sync.
 
 
 ---
