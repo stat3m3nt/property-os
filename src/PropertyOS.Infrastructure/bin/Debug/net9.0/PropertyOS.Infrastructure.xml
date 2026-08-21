@@ -4,5 +4,35 @@
         <name>PropertyOS.Infrastructure</name>
     </assembly>
     <members>
+        <member name="T:PropertyOS.Infrastructure.Data.PropertyOsDbContext">
+            <summary>
+            Entity Framework Core database context for the PropertyOS application.
+            </summary>
+        </member>
+        <member name="M:PropertyOS.Infrastructure.Data.PropertyOsDbContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{PropertyOS.Infrastructure.Data.PropertyOsDbContext})">
+            <summary>
+            Initializes a new instance of the <see cref="T:PropertyOS.Infrastructure.Data.PropertyOsDbContext"/> class.
+            </summary>
+            <param name="options">The database context configuration options.</param>
+        </member>
+        <member name="M:PropertyOS.Infrastructure.Data.PropertyOsDbContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Configures the database model and its entity relationships.
+            </summary>
+            <param name="modelBuilder">The model builder used to configure the database model.</param>
+        </member>
+        <member name="T:PropertyOS.Infrastructure.DependencyInjection.DependencyInjection">
+            <summary>
+            Provides dependency injection configuration for the infrastructure layer.
+            </summary>
+        </member>
+        <member name="M:PropertyOS.Infrastructure.DependencyInjection.DependencyInjection.AddInfrastructure(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Registers infrastructure services with the dependency injection container.
+            </summary>
+            <param name="services">The application's service collection.</param>
+            <param name="configuration">The application's configuration.</param>
+            <returns>The updated service collection.</returns>
+        </member>
     </members>
 </doc>
