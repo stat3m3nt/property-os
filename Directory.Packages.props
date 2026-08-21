@@ -1,23 +1,91 @@
 <Project>
+
+  <!--
+    PropertyOS — Central Package Version Management
+
+    All NuGet package versions are defined in this file.
+    Individual .csproj files should reference packages without
+    specifying their versions.
+
+    Project Target Framework: .NET 9
+  -->
+
   <PropertyGroup>
+    <!-- Enable Central Package Management for the entire solution -->
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+
   <ItemGroup>
-    <!-- API Documentation -->
+
+    <!-- ============================================================
+         ASP.NET Core / API
+         ============================================================ -->
+
+    <!-- OpenAPI document generation for the ASP.NET Core API -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
+
+
+    <!-- ============================================================
+         Entity Framework Core / Database
+         ============================================================ -->
+
+    <!-- Core EF Core ORM functionality -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+
+    <!-- EF Core design-time tooling used for migrations -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4" />
+
+    <!-- EF Core command-line tooling -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.11" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.11" />
-    <!-- Testing -->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+
+    <!-- PostgreSQL provider for Entity Framework Core -->
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+
+    <!-- EF Core database health check integration -->
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="9.0.4" />
+
+
+    <!-- ============================================================
+         Microsoft.Extensions
+         ============================================================ -->
+
+    <!-- Access to application configuration abstractions -->
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+
+    <!-- Dependency injection abstractions -->
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+
+
+    <!-- ============================================================
+         Structured Logging — Serilog
+         ============================================================ -->
+
+    <!-- ASP.NET Core integration for Serilog -->
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
+
+    <!-- Console logging sink -->
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
+
+    <!-- File logging sink -->
     <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
+
+
+    <!-- ============================================================
+         Testing
+         ============================================================ -->
+
+    <!-- .NET test execution infrastructure -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+
+    <!-- xUnit testing framework -->
     <PackageVersion Include="xunit" Version="2.9.2" />
+
+    <!-- Visual Studio / dotnet test xUnit runner -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.0" />
+
+    <!-- Code coverage collection -->
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+
   </ItemGroup>
+
 </Project>

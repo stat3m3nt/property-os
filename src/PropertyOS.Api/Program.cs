@@ -1,4 +1,5 @@
 using Serilog;
+using PropertyOS.Infrastructure.Data;
 using PropertyOS.Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<PropertyOsDbContext>();
+
 var app = builder.Build();
 app.Logger.LogInformation("PropertyOS API started successfully");
 
@@ -34,5 +38,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 app.Run();
