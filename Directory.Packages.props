@@ -88,6 +88,11 @@
     <!-- Code coverage collection -->
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
 
+     <!-- ASP.NET Core integration testing with WebApplicationFactory -->
+     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.5" />
+
+     <!-- PostgreSQL containers for integration testing -->
+     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

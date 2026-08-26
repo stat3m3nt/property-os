@@ -48,15 +48,20 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestIdMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseMiddleware<OrganizationContextMiddleware>();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+/// <summary>
+/// Entry point for the PropertyOS API application.
+/// </summary>
+public partial class Program { }

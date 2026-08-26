@@ -14,7 +14,7 @@ namespace PropertyOS.Api.Controllers;
 /// </remarks>
 [ApiController]
 [Route("api/v1/health")]
-[Authorize]
+[AllowAnonymous]
 public sealed class HealthController : ControllerBase
 {
     /// <summary>
