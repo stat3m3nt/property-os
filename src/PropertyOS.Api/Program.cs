@@ -32,8 +32,9 @@ builder.Services
     {
         options.Authority = builder.Configuration["Supabase:JwtIssuer"];
         options.TokenValidationParameters.ValidateIssuer = true;
-        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateAudience = true;
         options.TokenValidationParameters.ValidateLifetime = true;
+        options.TokenValidationParameters.ClockSkew = TimeSpan.FromSeconds(60);
     });
 
 var app = builder.Build();
@@ -47,6 +48,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestIdMiddleware>();
 app.UseMiddleware<OrganizationContextMiddleware>();
 
 app.UseAuthentication();
