@@ -24,6 +24,8 @@
     <!-- OpenAPI document generation for the ASP.NET Core API -->
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
 
+     <!-- JWT Bearer authentication for Supabase-issued tokens -->
+     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
 
     <!-- ============================================================
          Entity Framework Core / Database

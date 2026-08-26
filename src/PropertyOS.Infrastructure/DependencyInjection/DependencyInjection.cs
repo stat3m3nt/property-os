@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PropertyOS.Infrastructure.Data;
+using PropertyOS.Application.Abstractions;
+using PropertyOS.Infrastructure.Authentication;
 
 namespace PropertyOS.Infrastructure.DependencyInjection;
 
@@ -23,7 +25,7 @@ public static class DependencyInjection
         services.AddDbContext<PropertyOsDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection")));
-
+        services.AddScoped<IOrganizationContext, OrganizationContext>();
         return services;
     }
 }

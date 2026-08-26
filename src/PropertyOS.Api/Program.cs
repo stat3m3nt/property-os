@@ -1,6 +1,9 @@
-using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using PropertyOS.Infrastructure.Data;
 using PropertyOS.Infrastructure.DependencyInjection;
+using PropertyOS.Api.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,15 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<PropertyOsDbContext>();
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Supabase:JwtIssuer"];
+        options.TokenValidationParameters.ValidateIssuer = true;
+        options.TokenValidationParameters.ValidateAudience = false;
+        options.TokenValidationParameters.ValidateLifetime = true;
+    });
 
 var app = builder.Build();
 app.Logger.LogInformation("PropertyOS API started successfully");
@@ -34,6 +46,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<OrganizationContextMiddleware>();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace PropertyOS.Api.Controllers;
 
@@ -12,6 +14,7 @@ namespace PropertyOS.Api.Controllers;
 /// </remarks>
 [ApiController]
 [Route("api/v1/health")]
+[Authorize]
 public sealed class HealthController : ControllerBase
 {
     /// <summary>
