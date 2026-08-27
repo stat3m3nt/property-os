@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit" />
@@ -21,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PropertyOS.Application\PropertyOS.Application.csproj" />
     <ProjectReference Include="..\..\src\PropertyOS.Domain\PropertyOS.Domain.csproj" />
+    <ProjectReference Include="..\..\src\PropertyOS.Api\PropertyOS.Api.csproj" />
   </ItemGroup>
 
 </Project>

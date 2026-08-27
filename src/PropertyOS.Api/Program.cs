@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PropertyOS.Infrastructure.Data;
 using PropertyOS.Infrastructure.DependencyInjection;
 using PropertyOS.Api.Middleware;
+using PropertyOS.Api.Authorization;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +20,10 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<PermissionAuthorizationFilter>();
+});
 
 builder.Services.AddOpenApi();
 
@@ -31,10 +36,21 @@ builder.Services
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["Supabase:JwtIssuer"];
-        options.TokenValidationParameters.ValidateIssuer = true;
-        options.TokenValidationParameters.ValidateAudience = true;
-        options.TokenValidationParameters.ValidateLifetime = true;
-        options.TokenValidationParameters.ClockSkew = TimeSpan.FromSeconds(60);
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["Supabase:JwtIssuer"],
+
+            ValidateAudience = true,
+            ValidAudience = "authenticated",
+
+            ValidateLifetime = true,
+
+            ValidateIssuerSigningKey = true,
+
+            ClockSkew = TimeSpan.FromSeconds(60)
+        };
     });
 
 var app = builder.Build();

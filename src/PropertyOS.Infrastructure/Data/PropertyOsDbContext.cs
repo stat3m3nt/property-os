@@ -23,5 +23,6 @@ public class PropertyOsDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(PropertyOsDbContext).Assembly);
     }
 }
