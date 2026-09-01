@@ -25,6 +25,17 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<PermissionAuthorizationFilter>();
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("WebApp", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddInfrastructure(builder.Configuration);
@@ -67,10 +78,15 @@ app.UseHttpsRedirection();
 app.UseMiddleware<RequestIdMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-app.UseMiddleware<OrganizationContextMiddleware>();
+app.UseCors("WebApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Must run after UseAuthentication()/UseAuthorization() — organization
+// resolution (Sprint 2) will read claims off HttpContext.User, which is
+// not populated until the authentication middleware has run.
+app.UseMiddleware<OrganizationContextMiddleware>();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
