@@ -1,7 +1,6 @@
 # PropertyOS — System Design
 
-**Version:** 1.0  
-**Status:** Draft  
+**Version:** 1.0   
 **Author:** Andrew Evboifo  
 **Date:** July 2026
 

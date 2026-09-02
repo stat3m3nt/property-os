@@ -87,7 +87,7 @@ The sequencing follows three engineering principles, in priority order:
 
 | # | Sprint Name | Duration | Story Points | Primary Domains (from schema) |
 |---|---|---|---|---|
-| 1 | Platform Foundation | 2 weeks | 34 | Solution structure, EF Core, Supabase Auth, RLS scaffolding, Swagger, CI/CD |
+| 1 | Platform Foundation | 2 weeks | 34 | Solution structure, EF Core, Supabase Auth, RLS scaffolding, OpenAPI, CI/CD |
 | 2 | Organization, Identity & Access | 2 weeks | 29 | Organizations, OrganizationSettings, Users, Roles, Permissions, UserSessions, LoginAttempts, ApiKeys |
 | 3 | Property Portfolio | 2 weeks | 31 | Properties, Buildings, Floors, Units, Amenities |
 | 4 | Tenant Management | 1.5 weeks | 21 | Tenants, EmergencyContacts, Occupancies |
@@ -167,7 +167,7 @@ flowchart TD
 
 | Milestone | After Sprint | Release Name | What Ships |
 |---|---|---|---|
-| **M1 — Walking Skeleton** | 1 | `v0.1.0-alpha` | Authenticated API, empty domain, Swagger live, CI green |
+| **M1 — Walking Skeleton** | 1 | `v0.1.0-alpha` | Authenticated API, empty domain, OpenAPI live, CI green |
 | **M2 — Tenant-Ready Org Shell** | 2 | `v0.2.0-alpha` | An organization can be created and staffed with role-based users |
 | **M3 — Portfolio MVP** | 3 | `v0.3.0-alpha` | Properties/Units manageable end-to-end in the web app |
 | **M4 — Occupancy MVP** | 4 | `v0.4.0-alpha` | Tenants can be onboarded and linked to units |
@@ -224,7 +224,7 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - Supabase project provisioned; PostgreSQL connectivity via EF Core
 - Supabase Auth JWT validation middleware
 - Empty but real `/api/v1/health` and `/api/v1/organizations/current` (stub) endpoints
-- Swagger/OpenAPI live with JWT bearer auth wired
+- OpenAPI live with JWT bearer auth wired
 - GitHub Actions CI pipeline (build, test, lint)
 - Structured logging (Serilog) and configuration (`appsettings`, environment variables, secrets)
 
@@ -244,7 +244,7 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - Implement JWT bearer authentication middleware validating Supabase-issued tokens (Section 3.2 of `07-api-design.md`)
 - Implement global exception-handling middleware producing the standardized error envelope (Section 6 of `07-api-design.md`)
 - Implement `[RequirePermission]` attribute + `PermissionAuthorizationFilter` (logic complete, but with no real permissions to check yet — unit tested against fake claims)
-- Configure Swashbuckle with XML doc comments and bearer security scheme
+- Configure ASP.NET Core's native OpenAPI support (`AddOpenApi()`) with XML doc comments and a bearer security scheme document transformer
 
 ### Frontend Work
 - Scaffold Next.js 14 (App Router) + TypeScript + Tailwind project
@@ -271,7 +271,7 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - [ ] `dotnet test` passes in CI
 - [ ] A user can log in via Supabase Auth from the Next.js app and the Expo app
 - [ ] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment
-- [ ] Swagger UI at `/swagger` allows pasting a JWT and calling the health endpoint
+- [ ] The OpenAPI document at `/openapi/v1.json` declares the bearer scheme, and a JWT can be used via the generated TypeScript client (or a tool like Postman) to call the health endpoint
 - [ ] CI pipeline is green on `main`
 
 ### Dependencies
@@ -1132,7 +1132,7 @@ For a solo-developer PLAR context, "review" is performed as a deliberate second 
 |---|---|---|
 | Unit tests (Domain, Application) | xUnit, FluentAssertions, Moq/NSubstitute | Every sprint, for its own new services |
 | Integration tests (API + real Postgres) | `WebApplicationFactory`, Testcontainers | Every sprint, especially tenant-isolation tests |
-| Contract tests (API shape vs. OpenAPI spec) | Swashbuckle-generated spec + Pact or a custom schema-diff check | Every sprint touching endpoints |
+| Contract tests (API shape vs. OpenAPI spec) | Natively-generated OpenAPI spec + Pact or a custom schema-diff check | Every sprint touching endpoints |
 | E2E tests (browser) | Playwright | Sprint 3 onward (once real UI flows exist), consolidated in Sprint 11 |
 | Load/performance tests | k6 or Artillery | Sprint 6 (targeted), Sprint 11 (comprehensive) |
 | Security tests | Manual review + `dotnet list package --vulnerable`, `npm audit`, OWASP ZAP baseline scan | Sprint 11 (dedicated), spot-checked every sprint |
@@ -1184,7 +1184,7 @@ Applied uniformly across all 12 sprints, in addition to each sprint's specific D
 - [ ] Code merged to `main` via a reviewed, CI-green PR
 - [ ] Automated tests written and passing (unit + integration, per Section 22)
 - [ ] No new static analysis warnings
-- [ ] API changes documented (XML comments regenerate Swagger correctly)
+- [ ] API changes documented (XML comments regenerate the OpenAPI spec correctly)
 - [ ] RLS/tenant-isolation implications verified for any new tenant-scoped data
 - [ ] Deployed and smoke-tested in staging
 - [ ] Sprint review demo prepared showing the working increment

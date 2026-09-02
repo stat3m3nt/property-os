@@ -1,0 +1,53 @@
+-- ============================================================================
+-- PropertyOS — Row-Level Security Baseline Policy Template
+-- ============================================================================
+-- Sprint 1:
+--   Establishes the PostgreSQL RLS pattern that will be applied to
+--   organization-scoped tables beginning in Sprint 2.
+--
+-- IMPORTANT:
+--   Organization context is NOT resolved by the API yet.
+--   OrganizationContextMiddleware remains a Sprint 1 stub.
+--
+--   Do not enable these policies on production tables until Sprint 2
+--   implements the authenticated user's organization resolution.
+-- ============================================================================
+
+-- ----------------------------------------------------------------------------
+-- Tenant context
+-- ----------------------------------------------------------------------------
+-- The API will set this transaction-local PostgreSQL setting once the
+-- organization context is resolved:
+--
+--   SET LOCAL app.current_organization_id = '<organization-id>';
+--
+-- RLS policies can then read it using current_setting().
+-- ----------------------------------------------------------------------------
+
+-- Example:
+--
+-- CREATE POLICY tenant_isolation_policy
+-- ON <table_name>
+-- USING (
+--     organization_id = current_setting(
+--         'app.current_organization_id',
+--         true
+--     )::uuid
+-- )
+-- WITH CHECK (
+--     organization_id = current_setting(
+--         'app.current_organization_id',
+--         true
+--     )::uuid
+-- );
+
+-- ----------------------------------------------------------------------------
+-- Fail-closed behavior
+-- ----------------------------------------------------------------------------
+-- current_setting(..., true) returns NULL when the setting has not been
+-- established. Therefore, organization_id = NULL evaluates to UNKNOWN,
+-- causing PostgreSQL to reject the row under RLS.
+--
+-- This is intentional: requests without an established tenant context
+-- must not gain access to organization-scoped data.
+-- ----------------------------------------------------------------------------

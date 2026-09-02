@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Enables ASP.NET Core User Secrets for local development -->
+    <UserSecretsId>f97d3a2c-5dca-4c68-bc43-eb9874369a09</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+
+    <!-- API Documentation -->
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+
+    <!-- JWT authentication -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+
+    <!-- Entity Framework Core design-time tools for migrations -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <!-- Database health checks -->
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
+
+    <!-- Structured Logging -->
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <!-- Application layers -->
+    <ProjectReference Include="..\PropertyOS.Application\PropertyOS.Application.csproj" />
+    <ProjectReference Include="..\PropertyOS.Infrastructure\PropertyOS.Infrastructure.csproj" />
+    <ProjectReference Include="..\PropertyOS.Contracts\PropertyOS.Contracts.csproj" />
+
+  </ItemGroup>
+
+</Project>
