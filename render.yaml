@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: propertyos-api
+    runtime: docker
+    dockerfilePath: ./src/PropertyOS.Api/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Staging
+      - key: ConnectionStrings__DefaultConnection
+        sync: false          # set manually in Render dashboard from Supabase
+      - key: Supabase__JwtIssuer
+        value: https://yowaqlyxcizrtesvvann.supabase.co/auth/v1
+      - key: Cors__AllowedOrigins__0
+        sync: false          # set to your Vercel URL once known, e.g. https://propertyos.vercel.app

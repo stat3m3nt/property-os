@@ -28,12 +28,16 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<PermissionAuthorizationFilter>();
 });
 
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? ["http://localhost:3000"];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("WebApp", policy =>
     {
         policy
-            .WithOrigins("http://localhost:3000")
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
