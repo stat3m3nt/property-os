@@ -267,12 +267,12 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - ADR (Architecture Decision Record) template established; first ADR written: "Why Clean Architecture + Repository Pattern"
 
 ### Definition of Done
-- [ ] Solution builds with zero warnings under `TreatWarningsAsErrors`
-- [ ] `dotnet test` passes in CI
+- [x] Solution builds with zero warnings under `TreatWarningsAsErrors`
+- [x] `dotnet test` passes in CI
 - [ ] A user can log in via Supabase Auth from the Next.js app and the Expo app
 - [ ] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment
 - [ ] The OpenAPI document at `/openapi/v1.json` declares the bearer scheme, and a JWT can be used via the generated TypeScript client (or a tool like Postman) to call the health endpoint
-- [ ] CI pipeline is green on `main`
+- [x] CI pipeline is green on `main`
 
 ### Dependencies
 None — this is the first sprint. All later sprints depend on this one.

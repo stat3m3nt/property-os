@@ -5,6 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 namespace PropertyOS.Api.Controllers;
 
 /// <summary>
+/// Represents the operational health status returned by the health endpoint.
+/// </summary>
+public sealed record HealthResponse(string Status, string Service, DateTime Timestamp);
+
+/// <summary>
 /// Provides endpoints for monitoring the operational health of the PropertyOS API.
 /// </summary>
 /// <remarks>
@@ -34,14 +39,9 @@ public sealed class HealthController : ControllerBase
     /// The API is operational and successfully processed the health check request.
     /// </response>
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<HealthResponse>(StatusCodes.Status200OK)]
     public IActionResult Get()
     {
-        return Ok(new
-        {
-            status = "Healthy",
-            service = "PropertyOS.Api",
-            timestamp = DateTime.UtcNow
-        });
+        return Ok(new HealthResponse("Healthy", "PropertyOS.Api", DateTime.UtcNow));
     }
 }
