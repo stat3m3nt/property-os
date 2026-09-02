@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.OpenApi;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -36,7 +39,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+});
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
@@ -97,3 +103,81 @@ app.Run();
 /// Entry point for the PropertyOS API application.
 /// </summary>
 public partial class Program { }
+
+/// <summary>
+/// Adds the HTTP Bearer authentication scheme and security requirements
+/// to the generated OpenAPI document.
+/// </summary>
+/// <remarks>
+/// This allows API consumers and generated clients to understand that
+/// authenticated endpoints accept Supabase JWT bearer tokens.
+/// </remarks>
+internal sealed class BearerSecuritySchemeTransformer(
+    IAuthenticationSchemeProvider authenticationSchemeProvider)
+    : IOpenApiDocumentTransformer
+{
+    /// <summary>
+    /// Transforms the generated OpenAPI document by adding the Bearer
+    /// authentication scheme and applying it to protected operations.
+    /// </summary>
+    /// <param name="document">The OpenAPI document being generated.</param>
+    /// <param name="context">The OpenAPI document transformation context.</param>
+    /// <param name="cancellationToken">A token used to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous transformation operation.</returns>
+    public async Task TransformAsync(
+        OpenApiDocument document,
+        OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        var authenticationSchemes =
+            await authenticationSchemeProvider.GetAllSchemesAsync();
+
+        if (!authenticationSchemes.Any(
+            authScheme => authScheme.Name == JwtBearerDefaults.AuthenticationScheme))
+        {
+            return;
+        }
+
+        document.Components ??= new OpenApiComponents();
+
+        document.Components.SecuritySchemes =
+            new Dictionary<string, OpenApiSecurityScheme>
+            {
+                ["Bearer"] = new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    In = ParameterLocation.Header,
+                    BearerFormat = "JWT"
+                }
+            };
+
+        foreach (var path in document.Paths)
+        {
+            foreach (var operation in path.Value.Operations)
+            {
+                if (path.Key == "/api/v1/health")
+                {
+                    continue;
+                }
+
+                operation.Value.Security ??= [];
+
+                operation.Value.Security.Add(
+                    new OpenApiSecurityRequirement
+                    {
+                        [
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Id = "Bearer",
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            }
+                        ] = []
+                    });
+            }
+        }
+    }
+}

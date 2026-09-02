@@ -1,6 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PropertyOS.Api.Controllers;
+
+/// <summary>
+/// Represents the response returned by the <c>GET /api/v1/organizations/current</c> endpoint, containing information about the currently selected organization.
+/// </summary>
+public sealed record OrganizationResponse(Guid Id, string Name, string Status);
 
 /// <summary>
 /// Provides endpoints for retrieving information about the current organization.
@@ -13,6 +19,7 @@ namespace PropertyOS.Api.Controllers;
 /// </remarks>
 [ApiController]
 [Route("api/v1/organizations")]
+[Authorize]
 public sealed class OrganizationsController : ControllerBase
 {
     /// <summary>
@@ -32,11 +39,6 @@ public sealed class OrganizationsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult GetCurrent()
     {
-        return Ok(new
-        {
-            id = Guid.Empty,
-            name = "Default Organization",
-            status = "Stub"
-        });
+        return Ok(new OrganizationResponse(Guid.Empty, "Default Organization", "Stub"));
     }
 }
