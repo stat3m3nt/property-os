@@ -247,7 +247,7 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - Configure ASP.NET Core's native OpenAPI support (`AddOpenApi()`) with XML doc comments and a bearer security scheme document transformer
 
 ### Frontend Work
-- Scaffold Next.js 14 (App Router) + TypeScript + Tailwind project
+- Scaffold Next.js 16 (App Router) + TypeScript + Tailwind project
 - Configure Supabase Auth client SDK, login page, protected route wrapper
 - Generate the TypeScript API client from the (currently near-empty) OpenAPI spec, wiring up the codegen pipeline itself as reusable tooling for all future sprints
 
