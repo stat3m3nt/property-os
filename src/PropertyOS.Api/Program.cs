@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -75,6 +75,7 @@ builder.Services
     });
 
 var app = builder.Build();
+
 app.Logger.LogInformation("PropertyOS API started successfully");
 
 // Configure the HTTP request pipeline.
@@ -91,12 +92,8 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseCors("WebApp");
 
 app.UseAuthentication();
-app.UseAuthorization();
-
-// Must run after UseAuthentication()/UseAuthorization() — organization
-// resolution (Sprint 2) will read claims off HttpContext.User, which is
-// not populated until the authentication middleware has run.
 app.UseMiddleware<OrganizationContextMiddleware>();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health");
