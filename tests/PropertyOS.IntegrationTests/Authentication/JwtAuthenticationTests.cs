@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
 
 namespace PropertyOS.IntegrationTests.Authentication;
@@ -137,4 +137,36 @@ public sealed class JwtAuthenticationTests : IClassFixture<JwtTestWebApplication
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
-}
+
+    /// <summary>
+    /// Verifies that an authenticated tenant request requires an organization header.
+    /// </summary>
+    [Fact]
+    public async Task OrganizationEndpoint_MissingOrganizationHeader_ReturnsBadRequest()
+    {
+        using var client = _factory.CreateClient();
+        var token = JwtTestWebApplicationFactory.CreateToken();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
+
+        var response = await client.GetAsync("/api/v1/organizations/current");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Verifies that a malformed organization ID is rejected before database access.
+    /// </summary>
+    [Fact]
+    public async Task OrganizationEndpoint_InvalidOrganizationHeader_ReturnsBadRequest()
+    {
+        using var client = _factory.CreateClient();
+        var token = JwtTestWebApplicationFactory.CreateToken();
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", token);
+        client.DefaultRequestHeaders.Add("X-Organization-Id", "not-a-guid");
+
+        var response = await client.GetAsync("/api/v1/organizations/current");
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }}
