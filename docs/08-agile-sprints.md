@@ -269,8 +269,8 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 ### Definition of Done
 - [x] Solution builds with zero warnings under `TreatWarningsAsErrors`
 - [x] `dotnet test` passes in CI
-- [ ] A user can log in via Supabase Auth from the Next.js app and the Expo app
-- [ ] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment
+- [x] A user can log in via Supabase Auth from the Next.js app and the Expo app
+- [x] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment
 - [ ] The OpenAPI document at `/openapi/v1.json` declares the bearer scheme, and a JWT can be used via the generated TypeScript client (or a tool like Postman) to call the health endpoint
 - [x] CI pipeline is green on `main`
 
