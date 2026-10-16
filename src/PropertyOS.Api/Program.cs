@@ -79,7 +79,7 @@ var app = builder.Build();
 app.Logger.LogInformation("PropertyOS API started successfully");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 {
     app.MapOpenApi();
 }
