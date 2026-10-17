@@ -19,7 +19,7 @@
 -- The API will set this transaction-local PostgreSQL setting once the
 -- organization context is resolved:
 --
---   SET LOCAL app.current_organization_id = '<organization-id>';
+--   SET LOCAL app.current_org_id = '<organization-id>';
 --
 -- RLS policies can then read it using current_setting().
 -- ----------------------------------------------------------------------------
@@ -30,13 +30,13 @@
 -- ON <table_name>
 -- USING (
 --     organization_id = current_setting(
---         'app.current_organization_id',
+--         'app.current_org_id',
 --         true
 --     )::uuid
 -- )
 -- WITH CHECK (
 --     organization_id = current_setting(
---         'app.current_organization_id',
+--         'app.current_org_id',
 --         true
 --     )::uuid
 -- );
