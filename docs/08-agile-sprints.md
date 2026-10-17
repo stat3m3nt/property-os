@@ -263,16 +263,34 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 
 ### Documentation Tasks
 - `README.md` with local dev setup instructions
-- `docs/01-architecture-overview.md` finalized to match the actual scaffolded structure
-- ADR (Architecture Decision Record) template established; first ADR written: "Why Clean Architecture + Repository Pattern"
+- `docs/05-system-design.md` finalized to match the actual scaffolded structure
+- ADR (Architecture Decision Record) template established in `docs/adr/`; first ADR written: "Clean Architecture layering without a repository layer" (ADR-0001), plus ADR-0002 (organization context via header)
 
 ### Definition of Done
 - [x] Solution builds with zero warnings under `TreatWarningsAsErrors`
 - [x] `dotnet test` passes in CI
 - [x] A user can log in via Supabase Auth from the Next.js app and the Expo app
-- [x] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment
+- [~] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment (verified locally and on staging 2026-10-17; endpoint is anonymous; no per-PR preview environment)
 - [x] The OpenAPI document at `/openapi/v1.json` declares the bearer scheme, and a JWT can be used via the generated TypeScript client (or a tool like Postman) to call the health endpoint
 - [x] CI pipeline is green on `main`
+
+### Close-out Status (2026-10-17)
+
+Sprint 1 closed with documented carry-overs. Tag:`v0.1.0-alpha`.
+
+**Verified**
+- Health: `/api/v1/health` returns 200 locally and on staging (the endpoint is anonymous). `/health` runs the database check.
+- Auth: a real Supabase token (ES256) validates on the staging API; the web app calls `/api/v1/auth/me` through the generated client.
+- Database exposure: `anon` and `authenticated` hold no privileges on `public` tables; default privileges revoked (`20261016120000_revoke_default_client_privileges.sql`); `__EFMigrationsHistory` locked down.
+- Docs: README rewritten; ADR template, ADR-0001 and ADR-0002 added in `docs/adr/`.
+
+**Carried over to Sprint 2**
+- [~] RLS foundation: policies exist, but the staging API connects as `postgres`, which bypasses RLS. Switch to `propertyos_api` is the first hardening task.
+- [~] Testcontainers harness: package referenced, no database-backed tests. First Sprint 2 task.
+- [ ] `packages/shared-types`: not created; the mobile app does not call the API yet.
+- [~] Deployed preview environment: staging only; no per-PR previews.
+- [~] Error envelope: JWT 401 has an empty body; organization-context errors use `{ "error": "..." }`.
+- [~] CI: backend build/test and web lint/build only; no web typecheck or test step, no mobile job, no Postgres.
 
 ### Dependencies
 None — this is the first sprint. All later sprints depend on this one.
