@@ -92,6 +92,13 @@ Controllers are intentionally thin. All business logic lives in the Application 
 PropertyOS is a **single-database, shared-schema multi-tenant** system. Every tenant-owned table carries an `organization_id UUID NOT NULL` column, and PostgreSQL **Row Level Security (RLS)** is enabled on every tenant-owned table.
 
 ### 2.1 Tenant Resolution
+> **Implementation note (2026-10-17):** the code currently differs from the steps below.
+> The active organization is selected with the `X-Organization-Id` request header and
+> verified against the caller's membership in the database, instead of being read from a
+> JWT `org_id` claim. `OrganizationContextMiddleware` then sets `app.current_org_id`
+> inside a per-request transaction. The EF Core global query filter in step 5 is not
+> implemented yet; row-level security and explicit organization predicates are the
+> current enforcement. See `docs/adr/0002-organization-context-via-header.md`.
 
 1. The client authenticates via Supabase Auth and receives a JWT.
 2. The JWT's custom claims include `org_id` (the organization the authenticated user is currently acting within) and `role`.
