@@ -158,3 +158,6 @@ vite.config.ts.timestamp-*
 # Test results
 TestResults/
 *.trx
+# local AI tooling
+.agents/
+.claude/
