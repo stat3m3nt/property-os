@@ -582,7 +582,7 @@ Each domain section documents its resource model, endpoint summary table, and fu
   "id": "b7e2f9a0-...",
   "name": "QuickBooks Sync",
   "keyPrefix": "pk_live_8f2a",
-  "apiKey": "pk_live_8f2a91cd0e3b4f2a8e9d1c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7",
+  "apiKey": "pk_live_<64-character-key-shown-once>",
   "scopes": ["invoices:read", "payments:read"],
   "expiresAt": "2027-07-31T00:00:00.000Z",
   "createdAt": "2026-07-31T14:10:00.000Z"
