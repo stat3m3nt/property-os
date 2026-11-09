@@ -161,3 +161,5 @@ TestResults/
 # local AI tooling
 .agents/
 .claude/
+AGENTS.md
+CLAUDE.md
