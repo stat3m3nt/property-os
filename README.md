@@ -1,8 +1,34 @@
 # PropertyOS
 
-Multi-tenant Property & Lease Management SaaS. See `docs/00-vision.md` for the product overview and `docs/08-agile-sprints.md` for the delivery roadmap this repository is being built against.
+Multi-tenant property and lease management SaaS. A solo-built, spec-first project:
+the product, schema and API were designed in `docs/` before the code, then delivered
+in sprints (`docs/08-agile-sprints.md`).
 
-**Current status:** Sprint 1 (Platform Foundation) is closing out. Authentication (Supabase), health checks, the OpenAPI contract, the database/RLS foundation and a staging deployment exist. Nothing beyond that should be assumed; check the sprint checklist in `docs/08-agile-sprints.md` for the current state of each deliverable.
+**Status:** Sprint 1 (Platform Foundation) is complete, released as `v0.1.0-alpha`.
+Sprint 2 (organizations, roles, API keys) is next. Carry-overs are tracked in the
+sprint document, including moving the staging API from the owner database role to
+the least-privilege `propertyos_api` role.
+
+## What exists today
+
+- **.NET 9 API** with Supabase JWT validation (ES256, signing keys discovered from the
+  issuer), health checks, and an OpenAPI contract with a generated TypeScript client
+- **PostgreSQL schema with row-level security** foundations, a least-privilege runtime
+  role, and revoked default client privileges
+- **Next.js web app** and **Expo mobile app** with Supabase login
+- **CI** (GitHub Actions), Docker, a staging deployment, and ADRs in `docs/adr/`
+
+## Architecture
+
+```mermaid
+flowchart LR
+    Web[Next.js web app] -->|JWT| API[ASP.NET Core API]
+    Mobile[Expo mobile app] -.->|login only, for now| Auth[Supabase Auth]
+    Web --> Auth
+    Auth -->|issues ES256 JWTs| Web
+    API -->|validates JWT via issuer keys| Auth
+    API -->|propertyos_api role| DB[(PostgreSQL with RLS)]
+```
 
 ## Prerequisites
 
