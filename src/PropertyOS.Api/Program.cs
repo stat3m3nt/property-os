@@ -6,9 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PropertyOS.Infrastructure.Data;
 using PropertyOS.Infrastructure.DependencyInjection;
+using PropertyOS.Api.Errors;
 using PropertyOS.Api.Middleware;
 using PropertyOS.Api.Authorization;
 using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,10 @@ builder.Host.UseSerilog();
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<PermissionAuthorizationFilter>();
+})
+.ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = ModelStateErrors.ToResult;
 });
 
 var allowedOrigins = builder.Configuration
@@ -87,7 +93,16 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 app.UseHttpsRedirection();
 
 app.UseMiddleware<RequestIdMiddleware>();
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();   
+
+// Gives every empty-bodied 4xx/5xx response (JWT 401, 403, 404, 405) the standard envelope.
+app.UseStatusCodePages(statusContext =>
+{
+    var httpContext = statusContext.HttpContext;
+    var statusCode = httpContext.Response.StatusCode;
+    var (code, message) = StatusCodeErrors.For(statusCode);
+    return ApiErrorWriter.WriteAsync(httpContext, statusCode, code, message);
+});
 
 app.UseCors("WebApp");
 

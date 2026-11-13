@@ -436,6 +436,9 @@ Every non-2xx response uses the following envelope:
 | `VALIDATION_FAILED` | 400/422 | Field-level validation failure |
 | `RESOURCE_NOT_FOUND` | 404 | Resource missing, deleted, or out of tenant scope |
 | `INSUFFICIENT_PERMISSION` | 403 | RBAC permission missing |
+| `ORGANIZATION_ACCESS_DENIED` | 403 | Caller is not a member of the requested organization |
+| `METHOD_NOT_ALLOWED` | 405 | HTTP method not supported for the resource | 
+| `UNSUPPORTED_MEDIA_TYPE` | 415 | Request content type not supported |
 | `UNAUTHORIZED` | 401 | Invalid/expired/missing token |
 | `CONFLICT` | 409 | Generic state conflict |
 | `CONCURRENCY_CONFLICT` | 412 | `If-Match` mismatch |
@@ -447,6 +450,7 @@ Every non-2xx response uses the following envelope:
 | `STRIPE_SIGNATURE_INVALID` | 400 | Webhook signature verification failed |
 | `IDEMPOTENCY_KEY_REUSED_WITH_DIFFERENT_PAYLOAD` | 409 | Same key, different request body |
 | `INTERNAL_SERVER_ERROR` | 500 | Unhandled exception |
+| `REQUEST_FAILED` | other 4xx | Fallback when no more specific code exists | 
 
 
 ---

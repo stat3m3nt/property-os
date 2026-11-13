@@ -1,5 +1,6 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using PropertyOS.Api.Errors;
 using PropertyOS.Application.Abstractions;
 using PropertyOS.Domain.Entities;
 using PropertyOS.Infrastructure.Data;
@@ -54,11 +55,12 @@ public sealed class OrganizationContextMiddleware
                 context.Request.Headers["X-Organization-Id"].ToString(),
                 out var organizationId))
         {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await context.Response.WriteAsJsonAsync(new
-            {
-                error = "A valid X-Organization-Id header is required."
-            });
+            await ApiErrorWriter.WriteAsync(
+                context,
+                StatusCodes.Status400BadRequest,
+                ErrorCodes.ValidationFailed,
+                "A valid X-Organization-Id header is required.",
+                [new ErrorDetail("X-Organization-Id", "Must be a valid organization GUID.")]);
             return;
         }
 
@@ -68,7 +70,11 @@ public sealed class OrganizationContextMiddleware
 
         if (!Guid.TryParse(subject, out var supabaseAuthId))
         {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await ApiErrorWriter.WriteAsync(
+                context,
+                StatusCodes.Status401Unauthorized,
+                ErrorCodes.Unauthorized,
+                "The access token does not contain a valid subject.");
             return;
         }
 
@@ -94,11 +100,11 @@ public sealed class OrganizationContextMiddleware
             if (!isMember)
             {
                 await transaction.RollbackAsync(context.RequestAborted);
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    error = "You do not have access to this organization."
-                });
+                await ApiErrorWriter.WriteAsync(
+                    context,
+                    StatusCodes.Status403Forbidden,
+                    ErrorCodes.OrganizationAccessDenied,
+                    "You do not have access to this organization.");
                 return;
             }
 
@@ -121,4 +127,4 @@ public sealed class OrganizationContextMiddleware
             throw;
         }
     }
-}
+}
