@@ -1,4 +1,4 @@
-using System.Text.Json;
+using PropertyOS.Api.Errors;
 
 namespace PropertyOS.Api.Middleware;
 
@@ -42,39 +42,22 @@ public sealed class ExceptionHandlingMiddleware
             var requestId = context.Items[RequestIdKey]?.ToString()
                 ?? Guid.NewGuid().ToString();
 
+            // Make sure the id in the response is the one that was logged.
+            context.Items[RequestIdKey] = requestId;
+
             _logger.LogError(
                 exception,
                 "Unhandled exception processing request {RequestId}",
                 requestId);
 
-            await WriteErrorResponseAsync(context, requestId);
+            var (code, message) = StatusCodeErrors.For(
+                StatusCodes.Status500InternalServerError);
+
+            await ApiErrorWriter.WriteAsync(
+                context,
+                StatusCodes.Status500InternalServerError,
+                code,
+                message);
         }
-    }
-
-    private static async Task WriteErrorResponseAsync(
-        HttpContext context,
-        string requestId)
-    {
-        if (context.Response.HasStarted)
-        {
-            return;
-        }
-
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        context.Response.ContentType = "application/json";
-
-        var response = new
-        {
-            error = new
-            {
-                code = "INTERNAL_SERVER_ERROR",
-                message = "An unexpected error occurred. Please contact support with the requestId below.",
-                requestId,
-                timestamp = DateTime.UtcNow
-            }
-        };
-
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(response));
     }
 }
