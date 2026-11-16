@@ -20,4 +20,12 @@ GRANT SELECT, INSERT, DELETE         ON public.role_permissions         TO prope
 GRANT SELECT, INSERT, DELETE         ON public.user_organization_roles  TO propertyos_api;
 GRANT SELECT                         ON public.users                    TO propertyos_api;
 
+-- RLS policies call this helper, so the runtime role must be able to execute it.
+-- Guarded: on a fresh database the migration that creates it may not have run yet.
+DO $$ BEGIN
+  IF to_regprocedure('public.app_current_org_id()') IS NOT NULL THEN
+    GRANT EXECUTE ON FUNCTION public.app_current_org_id() TO propertyos_api;
+  END IF;
+END $$;
+
 COMMIT;
