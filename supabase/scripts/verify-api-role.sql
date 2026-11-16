@@ -64,4 +64,13 @@ select 'no extra grants (incl. __EFMigrationsHistory)',
 union all
 select 'no default privileges granted to the role',
        not exists (select 1 from pg_default_acl
-                   where defaclacl::text like '%propertyos_api%');
+                   where defaclacl::text like '%propertyos_api%')
+union all
+select 'role can execute app_current_org_id()',
+       coalesce(has_function_privilege(
+         'propertyos_api', to_regprocedure('public.app_current_org_id()'), 'EXECUTE'), false)
+union all
+select 'no policy reads app.current_org_id directly (use app_current_org_id())',
+       not exists (select 1 from pg_policies
+                   where schemaname = 'public'
+                     and (coalesce(qual, '') || coalesce(with_check, '')) like '%current_setting%');
