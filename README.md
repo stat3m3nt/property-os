@@ -4,10 +4,10 @@ Multi-tenant property and lease management SaaS. A solo-built, spec-first projec
 the product, schema and API were designed in `docs/` before the code, then delivered
 in sprints (`docs/08-agile-sprints.md`).
 
-**Status:** Sprint 1 (Platform Foundation) is complete, released as `v0.1.0-alpha`.
-Sprint 2 (organizations, roles, API keys) is next. Carry-overs are tracked in the
-sprint document, including moving the staging API from the owner database role to
-the least-privilege `propertyos_api` role.
+**Status (2026-11-18):** Sprint 1 (Platform Foundation) is complete, released as
+`v0.1.0-alpha`. Sprint 2 (organization, identity, and access) is in progress. The
+staging API uses the least-privilege `propertyos_api` runtime role; remaining work is
+tracked in `docs/08-agile-sprints.md`.
 
 ## What exists today
 
@@ -98,7 +98,7 @@ Why this order: the Supabase migrations reference tables that only EF creates, s
 
 | Role | Used for |
 |---|---|
-| `postgres` | Owner. Runs EF migrations and the SQL above. Bypasses RLS. Not intended for runtime use, but the staging API currently connects as this role (known gap, tracked for Sprint 2 hardening). |
+| `postgres` | Owner/migration identity. Runs EF migrations and the SQL above. Bypasses RLS and is not used by the request-serving API. |
 | `propertyos_api` | Runtime role for the API. Not the owner and does not bypass RLS, so the row-level security policies apply to every request. |
 | `anon`, `authenticated` | Supabase client roles. They must hold no privileges on `public` tables; the API is the only data path. |
 | `service_role` | Server-side only. Bypasses RLS. Must never ship in a client app. |
@@ -165,7 +165,7 @@ Render environment variables (set in the dashboard; values marked secret are nev
 
 | Variable | Notes |
 |---|---|
-| `ConnectionStrings__DefaultConnection` | Secret. Target: the `propertyos_api` role. Staging currently uses `postgres`, which bypasses RLS; switching is a Sprint 2 hardening task. |
+| `ConnectionStrings__DefaultConnection` | Secret. The request-serving API must connect as `propertyos_api`, not `postgres`; keep the credential in the Render environment settings. |
 | `Supabase__JwtIssuer` | `https://<project-ref>.supabase.co/auth/v1` |
 | `Cors__AllowedOrigins__0` | The deployed web origin (for example the Vercel URL). |
 | `ASPNETCORE_ENVIRONMENT` | `Staging` |
@@ -179,14 +179,16 @@ curl https://<render-service>.onrender.com/openapi/v1.json
 
 The free Render plan spins the service down when idle, so the first request after a pause can be slow. Migrations are not applied automatically on deploy; see section 3.
 
-## Known gaps (as of 2026-10-17)
+## Known gaps (as of 2026-11-18)
 
-- The staging API connects to the database as `postgres`, which bypasses row-level security. The policies exist and the `propertyos_api` role is ready, but switching the runtime connection to it is planned Sprint 2 hardening. Application-level organization checks still apply.
-- There are no database-backed tests yet, so RLS policies are not exercised in CI. The Sprint 2 test harness (Testcontainers) addresses this.
-- A 401 from JWT validation returns an empty body, and organization-context errors use a simple `{ "error": "..." }` shape. Both differ from the standard error envelope in `docs/07-api-design.md`.
-- No `users` row is created automatically on first sign-in, and there is no organization-creation endpoint yet (Sprint 2).
-- `packages/shared-types` does not exist, and the mobile app does not call the API yet.
+- Organization provisioning is not yet exposed as a completed self-service API workflow. `GET /api/v1/organizations/current` exists; create/update organization and settings workflows remain Sprint 2 work.
+- Full user management, invitations, sessions, login-attempt visibility, API-key lifecycle, and permission resolution remain incomplete.
+- Database-backed integration tests now exist under `tests/PropertyOS.IntegrationTests/Database/` and use Testcontainers/PostgreSQL. Run the complete database test filter before treating the full suite as verified.
+- The current tenant-selection contract is `X-Organization-Id` plus verified JWT `sub` membership, as documented in ADR-0002. The custom JWT claims flow in `docs/07-api-design.md` is target design, not current implementation.
+- `packages/shared-types` does not exist, and the mobile app does not call the PropertyOS API yet.
 - Only a staging environment exists; there is no per-PR preview deployment.
+- CI runs backend build/tests and web lint/build; dedicated frontend typecheck/test and mobile CI checks are not yet configured.
+- The standard API error envelope is implemented. Keep new controller, middleware, validation, and status-code errors on that shared contract.
 
 ## Solution structure
 
@@ -206,7 +208,7 @@ apps/
 supabase/
   migrations/                 SQL applied after EF migrations (RLS, privileges)
   scripts/                    One-off operational SQL (history table lockdown, API role bootstrap)
-docs/                         Vision, requirements, system design, API design, roadmap, ADRs
+docs/                         Vision, requirements, stakeholders, use cases, user stories, system design, DBML schema, API design, roadmap, ADRs, diagrams
 ```
 
 Dependency direction (Clean Architecture): `Domain` <- `Application` <- `Infrastructure`, with `Api` depending on `Application`, `Infrastructure`, and `Contracts`. `Domain` has no project references. Architecture decisions are recorded in `docs/adr/`.

@@ -517,7 +517,7 @@ This document should be read alongside:
 - 02-stakeholders-personas.md
 - 03-use-cases.md
 - 04-user-stories.md
-- 06-database-design.md
+- 06-database-design-v2.dbml
 - 07-api-design.md
 
 ---

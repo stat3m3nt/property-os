@@ -7,7 +7,7 @@
 ---
 ## Document Purpose
 
-This document is the authoritative API design specification for **PropertyOS**. It defines every REST resource, endpoint, contract, validation rule, business rule, and security control exposed by the ASP.NET Core 8 Web API layer. It is derived directly from the PropertyOS relational schema (`docs/06-database-design.dbml` — the canonical source of truth for entities and relationships) and is intended to be read alongside that document.
+This document is the authoritative API design specification for **PropertyOS**. It defines every REST resource, endpoint, contract, validation rule, business rule, and security control exposed by the ASP.NET Core 9 Web API layer. It is derived directly from the PropertyOS relational schema (`docs/06-database-design-v2.dbml` — the canonical source of truth for entities and relationships) and is intended to be read alongside that document.
 
 This specification does not introduce any capability that is not backed by an existing table, column, or relationship in the schema. Every endpoint maps to a persisted entity, a persisted join/history table, or a well-defined orchestration across persisted entities (e.g., "Process Payment" reads/writes `Payments`, `Transactions`, `Invoices`, and `InvoiceLineItems`).
 
@@ -58,7 +58,7 @@ This specification does not introduce any capability that is not backed by an ex
 
 ## 1. Architectural Context
 
-PropertyOS exposes a single ASP.NET Core 8 Web API following **Clean Architecture**:
+PropertyOS exposes a single ASP.NET Core 9 Web API following **Clean Architecture**:
 
 ```
 PropertyOS.Api            → Controllers, middleware, filters, DTOs (presentation)
@@ -92,28 +92,35 @@ Controllers are intentionally thin. All business logic lives in the Application 
 PropertyOS is a **single-database, shared-schema multi-tenant** system. Every tenant-owned table carries an `organization_id UUID NOT NULL` column, and PostgreSQL **Row Level Security (RLS)** is enabled on every tenant-owned table.
 
 ### 2.1 Tenant Resolution
-> **Implementation note (2026-10-17):** the code currently differs from the steps below.
-> The active organization is selected with the `X-Organization-Id` request header and
-> verified against the caller's membership in the database, instead of being read from a
-> JWT `org_id` claim. `OrganizationContextMiddleware` then sets `app.current_org_id`
-> inside a per-request transaction. The EF Core global query filter in step 5 is not
-> implemented yet; row-level security and explicit organization predicates are the
-> current enforcement. See `docs/adr/0002-organization-context-via-header.md`.
+> **Implementation status (verified 2026-11-18):** the current API implementation uses
+> `X-Organization-Id`, not a JWT `org_id` claim, to select the active organization.
+> `OrganizationContextMiddleware` resolves the verified JWT `sub`, checks for a non-deleted
+> user with a membership in the selected organization, and starts a request transaction, and sets transaction-local
+> `app.current_org_id` with `set_config(..., true)`. PostgreSQL policies use
+> `public.app_current_org_id()` so an unset/empty setting resolves to NULL and fails
+> closed. There is no EF Core global tenant query filter or custom access-token hook in
+> the current implementation. See ADR-0002 and the migration
+> `supabase/migrations/20261116120000_add_app_current_org_id.sql`.
+>
+> **Target-design note:** the JWT custom-claims flow in the numbered steps and sequence
+> diagrams below is the originally designed/future model, not a description of the
+> current runtime behavior. Do not implement that flow as Sprint 2 work unless ADR-0002
+> is explicitly superseded and the API contract, tests, and roadmap are updated together.
 
 1. The client authenticates via Supabase Auth and receives a JWT.
 2. The JWT's custom claims include `org_id` (the organization the authenticated user is currently acting within) and `role`.
 3. Every API request must carry `Authorization: Bearer <token>`.
 4. `OrganizationContextMiddleware` extracts `org_id` from the validated JWT and sets it into an `IOrganizationContext` (scoped DI service) for the lifetime of the request.
 5. `PropertyOsDbContext` applies a global EF Core query filter: `HasQueryFilter(e => e.OrganizationId == _organizationContext.OrganizationId)` on every tenant-scoped entity.
-6. In addition to the EF Core filter (defense at the application layer), PostgreSQL RLS policies enforce the same isolation at the database layer, using `current_setting('app.current_org_id')`, which is set via `SET LOCAL` at the start of every transaction by the `TenantConnectionInterceptor`.
+6. In addition to the EF Core filter (defense at the application layer), PostgreSQL RLS policies enforce the same isolation at the database layer, using `public.app_current_org_id()`. `OrganizationContextMiddleware` sets the transaction-local value with `set_config('app.current_org_id', <organization-id>, true)` inside the request transaction.
 
 ```sql
 -- Example RLS policy (Properties table)
 ALTER TABLE properties ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY tenant_isolation_properties ON properties
-    USING (organization_id = current_setting('app.current_org_id')::uuid)
-    WITH CHECK (organization_id = current_setting('app.current_org_id')::uuid);
+    USING (organization_id = (SELECT public.app_current_org_id()))
+    WITH CHECK (organization_id = (SELECT public.app_current_org_id()));
 ```
 
 This gives PropertyOS **defense in depth**: even if an application-layer bug omitted the `WHERE organization_id = @orgId` predicate, the database itself would refuse to return or mutate rows belonging to another tenant.
@@ -157,7 +164,7 @@ sequenceDiagram
 
 ### 3.2 JWT Validation
 
-`JwtBearerMiddleware` is configured with:
+The ASP.NET Core JWT bearer authentication handler is configured with:
 
 - `Authority`: the Supabase project's issuer URL, used to fetch signing keys (JWKS) with caching.
 - `ValidateIssuer`, `ValidateAudience`, `ValidateLifetime`: all `true`.
@@ -165,6 +172,12 @@ sequenceDiagram
 - On failure, the middleware short-circuits with `401 Unauthorized` using the standard error envelope (Section 6), and never leaks whether the failure was due to expiry, signature mismatch, or malformed token.
 
 ### 3.3 Claims Schema
+
+> **Target design, not current implementation:** the claims below describe the intended
+> future token contract. The current API does not issue or consume `org_id`, `role`,
+> `permissions`, or `session_id` custom claims. Tenant selection currently uses
+> `X-Organization-Id` and database membership validation as described in Section 2.1
+> and ADR-0002. Implement a custom access-token hook only if ADR-0002 is superseded.
 
 | Claim | Description |
 |---|---|
