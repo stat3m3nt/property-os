@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PropertyOS.Api.Errors;
 using PropertyOS.Application.Abstractions;
 using PropertyOS.Infrastructure.Data;
 using PropertyOS.Domain.Entities;
@@ -65,7 +66,11 @@ public sealed class OrganizationsController : ControllerBase
 
         if (organization is null)
         {
-            return NotFound();
+            return new ApiErrorResult(
+                    StatusCodes.Status404NotFound,
+                    ErrorCodes.ResourceNotFound,
+                    "The requested organization was not found."
+                );       
         }
 
         return Ok(organization);

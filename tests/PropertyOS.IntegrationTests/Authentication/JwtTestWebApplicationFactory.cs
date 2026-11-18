@@ -70,13 +70,16 @@ public sealed class JwtTestWebApplicationFactory : WebApplicationFactory<Program
     /// validation pipeline (this does not attempt to replicate Supabase's
     /// custom claims — that lands with the Sprint 2 claims hook).
     /// </summary>
-    public static string CreateToken(bool expired = false, string issuer = Issuer)
+    public static string CreateToken(
+        bool expired = false,
+        string issuer = Issuer,
+        Guid? subject = null)
     {
         var handler = new JwtSecurityTokenHandler();
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString()),
+            new Claim(JwtRegisteredClaimNames.Sub, (subject ?? Guid.NewGuid()).ToString()),
             new Claim(JwtRegisteredClaimNames.Email, "test-user@example.com"),
         };
 
@@ -90,4 +93,4 @@ public sealed class JwtTestWebApplicationFactory : WebApplicationFactory<Program
 
         return handler.WriteToken(token);
     }
-}
+}
