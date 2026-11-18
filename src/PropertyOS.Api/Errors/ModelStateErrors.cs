@@ -13,10 +13,10 @@ public sealed class ApiErrorResult(
     int statusCode,
     string code,
     string message,
-    IReadOnlyList<ErrorDetail>? details = null) : IActionResult
+    IReadOnlyList<ErrorDetail>? details = null) : ActionResult
 {
     /// <inheritdoc />
-    public Task ExecuteResultAsync(ActionContext context) =>
+    public override Task ExecuteResultAsync(ActionContext context) =>
         ApiErrorWriter.WriteAsync(context.HttpContext, statusCode, code, message, details);
 }
 
