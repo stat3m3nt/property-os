@@ -3,13 +3,13 @@
 **Project:** PropertyOS — Multi-Tenant Property & Lease Management SaaS
 **Author:** Andrew Evboifo
 **Methodology:** Scrum (1–2 week sprints), single full-stack developer/team
-**Last Updated:** July 2026
+**Last Updated:** 18 November 2026
 
 ---
 
 ## Document Purpose
 
-This document is the authoritative Agile delivery roadmap for **PropertyOS**. It decomposes the full product — as defined in `docs/00-vision.md`, `docs/01-business-requirements.md`, `docs/06-database-design.dbml`, and `docs/07-api-design.md` — into a sequenced series of Scrum sprints that build the system incrementally, from empty repository to production-ready SaaS.
+This document is the authoritative Agile delivery roadmap for **PropertyOS**. It decomposes the full product — as defined in `docs/00-vision.md`, `docs/01-business-requirements.md`, `docs/06-database-design-v2.dbml`, and `docs/07-api-design.md` — into a sequenced series of Scrum sprints that build the system incrementally, from empty repository to production-ready SaaS.
 
 No feature in this roadmap is invented. Every sprint delivers functionality that is already fully specified in the database schema and API design documents. This roadmap answers a different question than those documents: not *what* the system does, but *in what order, and how,* a disciplined engineering team builds it.
 
@@ -18,8 +18,10 @@ No feature in this roadmap is invented. Every sprint delivers functionality that
 | Document | Relationship to this roadmap |
 |---|---|
 | `docs/05-system-design.md` | Defines the overall architecture, technology stack, and system components implemented throughout each sprint. |
-| `docs/06-database-design.md` | Defines the database schema, entities, relationships, constraints, and migrations implemented incrementally across the sprints. |
+| `docs/06-database-design-v2.dbml` | Defines the target relational schema, entities, relationships, and constraints implemented incrementally across the sprints. |
 | `docs/07-api-design.md` | Defines the REST API contracts, endpoints, authentication, validation, and backend services delivered throughout the implementation. |
+| `docs/02-stakeholders-personas.md` | Defines stakeholder groups and user personas used to validate workflows and UI decisions. |
+| `docs/03-use-cases.md` | Defines the business workflows that connect requirements to user stories and API behavior. |
 | `docs/04-user-stories.md` | Provides the functional backlog used to derive sprint tasks and feature implementation priorities. |
 | `docs/01-business-requirements.md` | Defines the business requirements and business rules that guide development and acceptance criteria for each sprint. |
 
@@ -259,7 +261,7 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - Unit tests for JWT validation middleware (valid, expired, malformed, tampered tokens)
 - Unit tests for the exception-handling middleware's error envelope shape
 - Integration test harness using `WebApplicationFactory` + Testcontainers (Postgres) established for all future sprints to build on
-- CI pipeline runs `dotnet test`, `npm test`, `npm run lint`, `npm run typecheck` on every PR
+- CI runs the backend build/tests and web lint/build on every PR; dedicated web typecheck/test and mobile checks remain follow-up work
 
 ### Documentation Tasks
 - `README.md` with local dev setup instructions
@@ -270,27 +272,34 @@ De-risks the entire project. Without this sprint, every later estimate is unreli
 - [x] Solution builds with zero warnings under `TreatWarningsAsErrors`
 - [x] `dotnet test` passes in CI
 - [x] A user can log in via Supabase Auth from the Next.js app and the Expo app
-- [x] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment (verified locally and on staging 2026-10-17; endpoint is anonymous; no per-PR preview environment)
+- [~] An authenticated request to `/api/v1/health` returns `200` locally, in staging, and in a deployed preview environment (verified locally and on staging 2026-10-17; endpoint is anonymous; no per-PR preview environment)
 - [x] The OpenAPI document at `/openapi/v1.json` declares the bearer scheme, and a JWT can be used via the generated TypeScript client (or a tool like Postman) to call the health endpoint
 - [x] CI pipeline is green on `main`
 
-### Close-out Status (2026-10-17)
+### Close-out Status (implementation baseline: 2026-11-18)
 
-Sprint 1 closed with documented carry-overs. Tag:`v0.1.0-alpha`.
+Sprint 1 remains closed as the platform foundation. The following records update the
+original close-out notes to reflect work completed during Sprint 2. Tag: `v0.1.0-alpha`.
 
 **Verified**
-- Health: `/api/v1/health` returns 200 locally and on staging (the endpoint is anonymous). `/health` runs the database check.
-- Auth: a real Supabase token (ES256) validates on the staging API; the web app calls `/api/v1/auth/me` through the generated client.
-- Database exposure: `anon` and `authenticated` hold no privileges on `public` tables; default privileges revoked (`20261016120000_revoke_default_client_privileges.sql`); `__EFMigrationsHistory` locked down.
-- Docs: README rewritten; ADR template, ADR-0001 and ADR-0002 added in `docs/adr/`.
+- Health: `/api/v1/health` returns 200 locally and on staging; `/health` runs the database check.
+- Authentication: Supabase ES256 JWT validation works on the staging API; `/api/v1/auth/me` is available.
+- Tenant context: the API uses `X-Organization-Id`, validates the JWT `sub` against organization membership, and sets transaction-local `app.current_org_id`, as documented in ADR-0002.
+- Database runtime security: staging uses the `propertyos_api` runtime role rather than `postgres`; the role is `NOSUPERUSER` and `NOBYPASSRLS`. See ADR-0003 and `supabase/scripts/verify-api-role.sql`.
+- Database testing: the Testcontainers/PostgreSQL fixture and database-backed integration tests now exist under `tests/PropertyOS.IntegrationTests/Database/`.
+- Error responses: the standard error envelope is implemented through `ApiErrorWriter`, exception handling, status-code handling, and model-state validation.
+- Documentation: ADR template and ADR-0001 through ADR-0003 exist in `docs/adr/`.
 
-**Carried over to Sprint 2**
-- [x] RLS foundation: policies exist, but the staging API connects as `postgres`, which bypasses RLS. Switch to `propertyos_api` is the first hardening task.
-- [x] Testcontainers harness: package referenced, no database-backed tests. First Sprint 2 task.
-- [ ] `packages/shared-types`: not created; the mobile app does not call the API yet.
-- [ ] Deployed preview environment: staging only; no per-PR previews.
-- [ ] Error envelope: JWT 401 has an empty body; organization-context errors use `{ "error": "..." }`.
-- [ ] CI: backend build/test and web lint/build only; no web typecheck or test step, no mobile job, no Postgres.
+**Remaining carry-overs / platform gaps**
+- [ ] `packages/shared-types` has not been created; web and mobile do not yet consume a shared types package.
+- [ ] The mobile app supports Supabase authentication but does not call the PropertyOS API yet.
+- [ ] There is no per-PR preview deployment; staging is the deployed integration environment.
+- [ ] CI runs backend build/tests and web lint/build, but does not yet run a dedicated web typecheck/test job or mobile checks.
+- [ ] The full Sprint 2 organization provisioning, settings, user-management, sessions, login-attempt, API-key, and permission-resolution workflows remain to be delivered and verified end-to-end.
+
+The targeted `DeletedOrganization_GetsNotFoundEnvelope` integration test passed on 2026-11-18.
+Run the full `FullyQualifiedName~Database` filter before treating the complete database
+integration suite as verified.
 
 ### Dependencies
 None — this is the first sprint. All later sprints depend on this one.
@@ -303,7 +312,7 @@ None — this is the first sprint. All later sprints depend on this one.
 ### Risks
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Supabase Auth custom claims (org_id, permissions) require a Postgres function/hook not yet fully understood | Medium | High | Timebox a spike (max 2 days) early in the sprint; fall back to claims populated via a lightweight middleware DB lookup if the native hook proves too complex for Sprint 1 |
+| Tenant selection and RLS context must remain consistent across API middleware and PostgreSQL policies | Medium | High | Record the header-based tenant-resolution decision in ADR-0002; test membership validation, transaction-local context, and RLS together with PostgreSQL integration tests |
 | Clean Architecture over-engineering for a small team | Low | Medium | Keep abstractions minimal in Sprint 1 (no premature CQRS/MediatR); add only what Sprint 2+ actually needs |
 
 ### Acceptance Criteria
@@ -314,9 +323,18 @@ Given a fresh clone of the repository, a developer can run one documented setup 
 ## 8. Sprint 2 — Organization, Identity & Access
 
 ### Sprint Goal
-Implement the full multi-tenant identity backbone: Organizations, org-scoped Users, Roles, Permissions, Sessions, and API Keys — the foundation every other domain's tenant isolation depends on.
+Complete the multi-tenant identity backbone: organization provisioning and settings, org-scoped Users, Roles, Permissions, Sessions, and API Keys — building on the already-implemented JWT validation, header-based tenant context, runtime database role, and RLS foundation.
 
 **Duration:** 2 weeks | **Story Points:** 29
+
+**Implementation status (2026-11-18):** Sprint 2 is in progress. The core organization-context middleware,
+transaction-local RLS context, least-privilege `propertyos_api` runtime role, PostgreSQL
+Testcontainers fixture, database-backed tenant-isolation tests, and standard API error
+envelope are implemented. The organization-creation flow, organization settings, full
+user-management/invitation flows, sessions, login attempts, API keys, and permission
+resolution are not yet complete. Treat the roadmap below as remaining scope, not as a
+claim that those features already exist.
+
 
 ### Business Value
 This is the sprint that makes PropertyOS *actually multi-tenant*. Every feature built afterward assumes an authenticated user with a resolved organization and permission set — this sprint is what makes that assumption true and safe (RLS-enforced).
@@ -329,18 +347,20 @@ This is the sprint that makes PropertyOS *actually multi-tenant*. Every feature 
 - `GET/POST /api-keys`, `POST /api-keys/{id}/rotate`
 
 ### Technical Tasks
-- Implement the Supabase `custom_access_token_hook` Postgres function populating `org_id`, `role`, `permissions`, `session_id` claims (resolves the Sprint 1 spike)
-- Wire `OrganizationContextMiddleware` to real claims (replacing the Sprint 1 stub)
-- Implement `IPermissionResolver` service computing effective permissions from `RolePermissions`
+- Keep `OrganizationContextMiddleware` aligned with ADR-0002: require `X-Organization-Id`, resolve the verified JWT `sub`, validate that the verified subject belongs to a non-deleted user with a membership in the selected organization, and set transaction-local `app.current_org_id`. The core middleware flow is already implemented; extend tests as edge cases are added.
+- Implement `IPermissionResolver` to compute effective permissions from `RolePermissions`; do not assume the JWT currently contains organization, role, or permission claims.
+- Implement the organization-provisioning use case through the allow-listed `app_create_organization` SECURITY DEFINER function described in ADR-0003. The API must continue using `propertyos_api`; do not switch request-scoped code to `postgres` or the Supabase service-role key.
 
 ### Database Work
-- Migrations: `Organizations`, `OrganizationSettings`, `Users`, `Roles`, `Permissions`, `RolePermissions`, `UserOrganizationRoles`, `UserSessions`, `LoginAttempts`, `ApiKeys`
-- Enable RLS on every tenant-scoped table above; write and test policies per Section 2.1 of `07-api-design.md`
-- Seed migration for the 7 built-in system roles and their default permission grants (Appendix A of `07-api-design.md`)
+- Existing EF entities/mappings and database security currently cover `Organizations`, `Users`, `Roles`, `Permissions`, `RolePermissions`, and `UserOrganizationRoles`; verify their migrations, grants, and RLS policies against the live model before adding more.
+- Add the remaining Sprint 2 persistence objects: `OrganizationSettings`, `UserSessions`, `LoginAttempts`, and `ApiKeys`.
+- Keep RLS policies aligned with `public.app_current_org_id()` (which safely maps an unset/empty transaction setting to NULL) and grant `propertyos_api` only the explicit privileges each migration requires.
+- Implement and test `app_create_organization` as specified in ADR-0003, including its narrowly scoped EXECUTE grant.
+- Seed migration for the 7 built-in system roles and their default permission grants (Appendix A of `07-api-design.md`).
 
 ### Backend Work
-- `OrganizationService`, `UserService`, `ApiKeyService` (Application layer) + corresponding repositories
-- Invitation flow integrating Supabase Auth's invite-link API
+- Implement the organization, user, and API-key use cases/services as they are needed. ADR-0001 records the current decision not to introduce a generic repository layer; do not add repositories solely to match the original roadmap wording.
+- Invitation flow integrating Supabase Auth's invite-link API; decide and document the narrowly scoped server-side credential path before implementation, as called out in ADR-0003. Never expose the service-role key to request-scoped controller code.
 - API key generation with bcrypt hashing at rest, scoped-permission validation on creation
 - Session revocation check integrated into the authorization pipeline (cached lookup against `UserSessions.revoked_at`)
 
@@ -355,15 +375,15 @@ This is the sprint that makes PropertyOS *actually multi-tenant*. Every feature 
 
 ### Testing Tasks
 - Integration tests proving cross-tenant isolation: user in Org A cannot read/write Org B's `Users`/`Organizations` rows even via crafted requests
-- Unit tests for permission resolution (role → permissions → effective claims)
+- Unit tests for permission resolution (role → permissions → effective permissions)
 - Contract tests for `/api-keys` one-time-reveal behavior
 
 ### Documentation Tasks
-- `docs/06-authentication-design.md` finalized with the actual custom claims hook implementation
+- Reconcile the authentication and tenant-resolution sections of `docs/07-api-design.md` with the implemented header-based flow; keep the implementation decision in `docs/adr/0002-organization-context-via-header.md` and the privileged-write decision in `docs/adr/0003-database-roles-and-privileged-writes.md`.
 - Appendix A permission matrix in `07-api-design.md` validated against seeded role data
 
 ### Definition of Done
-- [ ] A brand-new organization can be created, staffed with 3+ users across different roles, and each user's JWT carries correct claims
+- [ ] A brand-new organization can be provisioned, staffed with 3+ users across different roles, and selected on requests using `X-Organization-Id`; the API validates the caller's JWT `sub` against active membership. Do not require `org_id`/role/permission JWT claims unless ADR-0002 is superseded.
 - [ ] RLS integration tests pass (cross-tenant read/write attempts return empty/404, never another tenant's data)
 - [ ] API key creation, rotation, and revocation work end-to-end including the 24-hour grace window
 - [ ] All endpoints listed above pass their documented contract tests
@@ -378,7 +398,7 @@ Requires Sprint 1 (auth middleware, DbContext, CI). Blocks Sprints 3–10 (every
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
 | RLS policies subtly allow cross-tenant leakage on a join-heavy query | Medium | High | Dedicated "tenant isolation" integration test suite run on every PR touching any repository query, not just this sprint's |
-| Custom claims hook adds latency to every login | Low | Low | Benchmark hook execution time; cache role/permission lookups |
+| Organization provisioning requires narrowly scoped pre-tenant writes | Medium | High | Use the allow-listed SECURITY DEFINER function in ADR-0003; test its owner, search_path, EXECUTE grants, and input identity source |
 
 ### Acceptance Criteria
 Given two organizations each with their own users, a user authenticated against Organization A receives `404` (not `403`) when directly requesting a resource ID known to belong to Organization B.
@@ -429,7 +449,7 @@ All endpoints in Section 7.3 of `07-api-design.md`: Properties, Buildings, Floor
 - E2E test (Playwright): create a property end-to-end through the web UI
 
 ### Documentation Tasks
-- Update `03-database-design.md` ERD diagram links if any schema deltas were discovered during implementation
+- Update `docs/06-database-design-v2.dbml` ERD diagram links if any schema deltas were discovered during implementation
 - API contract tests documented as living examples for onboarding new engineers
 
 ### Definition of Done
@@ -492,7 +512,7 @@ Section 7.4 (Tenants, Emergency Contacts) and 7.5 (Occupancies) of `07-api-desig
 - Integration test: tenant created as a prospect, later successfully attached to an occupancy (forward-compatibility check for Sprint 5)
 
 ### Documentation Tasks
-- Persona alignment check: confirm this sprint's screens match the "Tenant" and "Property Manager" personas in `docs/02-personas.md`
+- Persona alignment check: confirm this sprint's screens match the "Tenant" and "Property Manager" personas in `docs/02-stakeholders-personas.md`
 
 ### Definition of Done
 - [ ] A tenant profile with 2+ emergency contacts can be created, edited, and viewed by both staff and the tenant themself (with appropriately scoped fields)
@@ -557,8 +577,8 @@ Section 7.6 of `07-api-design.md` in full: Leases CRUD, `renew`, `terminate`, am
 - E2E test: full lease lifecycle from creation through renewal through termination
 
 ### Documentation Tasks
-- Document the lease state machine as a diagram in `docs/03-database-design.md` if not already present
-- Cross-reference this sprint's business rules against `docs/business-requirements.md` to confirm no rule was invented beyond spec
+- Document the lease state machine as a diagram in `docs/06-database-design-v2.dbml` if not already present
+- Cross-reference this sprint's business rules against `docs/01-business-requirements.md` to confirm no rule was invented beyond spec
 
 ### Definition of Done
 - [ ] A lease can be created, activated, renewed, and terminated entirely through the API and web UI, each transition producing the correct database state and audit trail
@@ -762,7 +782,7 @@ Section 7.11 (Documents, Folders, Attachments) and 7.12 (Notifications data mode
 - Integration test: a `PENDING_SCAN` document cannot be downloaded until scan completes (`409`)
 
 ### Documentation Tasks
-- Document the polymorphic association pattern and its validation rules in `03-database-design.md` if not already captured
+- Document the polymorphic association pattern and its validation rules in `docs/06-database-design-v2.dbml` if not already captured
 
 ### Definition of Done
 - [ ] A lease document can be uploaded, attached to a specific lease, and downloaded via a signed URL that expires
@@ -957,7 +977,7 @@ No new domain features. This sprint hardens existing functionality exclusively.
 - Load test: simulate 50 concurrent organizations, 500 concurrent users, sustained realistic traffic mix (70% reads, 30% writes) against a staging environment sized like production
 
 ### Documentation Tasks
-- Security review findings and remediations logged in a new `docs/security-review-2026-Q3.md`
+- Security review findings and remediations logged in a new `docs/security-review.md`
 - Update the Risk Register (Section 26) and Technical Debt Register (Section 27) based on findings
 
 ### Definition of Done
@@ -1189,7 +1209,7 @@ flowchart TD
 
 A story/task is **Ready** to be pulled into a sprint when:
 
-- [ ] It traces to a specific, already-documented entity/endpoint in `03-database-design.md` or `07-api-design.md` (no invented scope)
+- [ ] It traces to a specific, already-documented entity/endpoint in `docs/06-database-design-v2.dbml` or `07-api-design.md` (no invented scope)
 - [ ] Acceptance criteria are written and testable
 - [ ] Dependencies on other stories/sprints are identified and either resolved or explicitly sequenced
 - [ ] UI/UX (if applicable) has at least a rough wireframe or reference to an existing pattern in the design system
@@ -1214,7 +1234,7 @@ Applied uniformly across all 12 sprints, in addition to each sprint's specific D
 
 | ID | Risk | Sprint(s) Affected | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|---|---|
-| R1 | Supabase custom claims hook complexity delays auth foundation | 1–2 | Medium | High | Timeboxed spike; fallback middleware-based claims resolution | Backend Lead |
+| R1 | Tenant-context selection and RLS enforcement drift between API and database | 1–2 | Medium | High | Keep ADR-0002 authoritative; run PostgreSQL-backed tenant-isolation tests on changes to middleware, policies, or tenant-scoped queries | Backend Lead |
 | R2 | RLS policy gaps cause cross-tenant data leakage | All | Medium | Critical | Dedicated isolation test suite run on every PR touching data access; full audit in Sprint 11 | Backend Lead |
 | R3 | Lease/rent business rules are jurisdiction-dependent and under-specified | 5–6 | High | High | Configurable via `OrganizationSettings`; explicit out-of-scope notes for unmodeled jurisdictional nuance | Product/Architecture |
 | R4 | Stripe integration edge cases (3DS, disputes, webhooks) under-tested | 6, 10 | High | High | Dedicated test-card matrix coverage; webhook replay/idempotency test suite | Backend Lead |
