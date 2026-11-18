@@ -285,8 +285,8 @@ Sprint 1 closed with documented carry-overs. Tag:`v0.1.0-alpha`.
 - Docs: README rewritten; ADR template, ADR-0001 and ADR-0002 added in `docs/adr/`.
 
 **Carried over to Sprint 2**
-- [~] RLS foundation: policies exist, but the staging API connects as `postgres`, which bypasses RLS. Switch to `propertyos_api` is the first hardening task.
-- [~] Testcontainers harness: package referenced, no database-backed tests. First Sprint 2 task.
+- [x] RLS foundation: policies exist, but the staging API connects as `postgres`, which bypasses RLS. Switch to `propertyos_api` is the first hardening task.
+- [x] Testcontainers harness: package referenced, no database-backed tests. First Sprint 2 task.
 - [ ] `packages/shared-types`: not created; the mobile app does not call the API yet.
 - [~] Deployed preview environment: staging only; no per-PR previews.
 - [~] Error envelope: JWT 401 has an empty body; organization-context errors use `{ "error": "..." }`.
