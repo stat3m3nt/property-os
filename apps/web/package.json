@@ -7,25 +7,28 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "generate:api": "openapi-typescript http://localhost:5252/openapi/v1.json -o src/lib/api/generated/schema.d.ts"
+    "generate:api": "openapi-typescript http://localhost:5252/openapi/v1.json -o src/lib/api/generated/schema.d.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
-    "next": "16.3.3",
+    "next": "^16.4.6",
     "openapi-fetch": "^0.13.4",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.3",
-    "tailwindcss": "^4",
+    "eslint-config-next": "^16.4.6",
     "openapi-typescript": "^7.4.4",
-    "typescript": "^5"
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.1.1"
   }
 }
