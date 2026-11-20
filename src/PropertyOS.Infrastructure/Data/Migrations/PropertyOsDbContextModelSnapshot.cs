@@ -166,10 +166,18 @@ namespace PropertyOS.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_roles_Global_Name")
+                        .HasFilter("\"OrganizationId\" IS NULL");
+
                     b.HasIndex("OrganizationId", "Name")
                         .IsUnique();
 
-                    b.ToTable("roles", (string)null);
+                    b.ToTable("roles", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_roles_SystemRoleOrganization", "(\"OrganizationId\" IS NULL AND \"IsSystemRole\" = TRUE)\r\nOR\r\n(\"OrganizationId\" IS NOT NULL AND \"IsSystemRole\" = FALSE)");
+                        });
                 });
 
             modelBuilder.Entity("PropertyOS.Domain.Entities.RolePermission", b =>

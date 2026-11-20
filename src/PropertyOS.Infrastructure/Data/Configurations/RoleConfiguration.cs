@@ -15,7 +15,16 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
     /// <param name="builder">The entity type builder.</param>
     public void Configure(EntityTypeBuilder<Role> builder)
     {
-        builder.ToTable("roles");
+        builder.ToTable("roles", table =>
+        {
+            table.HasCheckConstraint(
+                "CK_roles_SystemRoleOrganization",
+                """
+                ("OrganizationId" IS NULL AND "IsSystemRole" = TRUE)
+                OR
+                ("OrganizationId" IS NOT NULL AND "IsSystemRole" = FALSE)
+                """);
+        });
 
         builder.HasKey(role => role.Id);
 
@@ -51,6 +60,11 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
             role.Name
         })
         .IsUnique();
+
+        builder.HasIndex(role => role.Name)
+            .IsUnique()
+            .HasDatabaseName("IX_roles_Global_Name")
+            .HasFilter("\"OrganizationId\" IS NULL");
 
         builder.HasOne(role => role.Organization)
             .WithMany(organization => organization.Roles)

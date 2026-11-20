@@ -214,7 +214,9 @@ public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyRequest
 
 ### 3.5 Role Resolution
 
-Roles are organization-scoped (a user may hold different roles in different organizations, modeled via `UserOrganizationRoles`). `Users` rows are platform-level identities with no `organization_id` column of their own; every user-to-org relationship — including a user's *first* organization — is a row in `UserOrganizationRoles` (DB table: `user_organization_roles`), keyed on `(user_id, organization_id, role_id)`. A JWT's `org_id` claim (§3.3) reflects the user's *active* organization for that session, not their only one. Built-in roles:
+Roles may be either platform-level global roles or organization-owned roles. Organization-owned roles are scoped to a single organization, and a user may hold different roles in different organizations through `UserOrganizationRoles`. Global system roles have no owning organization (`Roles.OrganizationId` is `NULL`) and are shared across organizations.
+
+`Users` rows represent platform-level identities with no `organization_id` column of their own; every user-to-organization relationship, including a user's first organization, is represented by a row in `UserOrganizationRoles` (DB table: `user_organization_roles`), keyed on `(user_id, organization_id, role_id)`. A JWT's `org_id` claim (§3.3) reflects the user's active organization for that session, not their only one.
 
 | Role | Description |
 |---|---|
@@ -236,7 +238,7 @@ Permissions follow a `resource:action` convention (see Appendix A for the full m
 - `payments:process`, `payments:refund`
 - `apikeys:manage`
 
-Permissions are additive per role via `RolePermissions`, and an organization admin may customize role-permission assignments per organization (stored in `RolePermissions.organization_id`, nullable for system-default roles vs. non-null for org-specific overrides).
+Permissions are additive per role via `RolePermissions`. An organization admin may customize role-permission assignments for organization-owned roles. System-defined global roles have no owning organization (`Roles.OrganizationId` is `NULL`), and their permission assignments are shared across organizations. Organization-specific role-permission assignments are scoped through the associated role rather than a separate `OrganizationId` column on `RolePermissions`.
 
 ---
 
