@@ -19,11 +19,7 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<Role>
         {
             table.HasCheckConstraint(
                 "CK_roles_SystemRoleOrganization",
-                """
-                ("OrganizationId" IS NULL AND "IsSystemRole" = TRUE)
-                OR
-                ("OrganizationId" IS NOT NULL AND "IsSystemRole" = FALSE)
-                """);
+                "(\"OrganizationId\" IS NULL AND \"IsSystemRole\" = TRUE) OR (\"OrganizationId\" IS NOT NULL AND \"IsSystemRole\" = FALSE)");
         });
 
         builder.HasKey(role => role.Id);

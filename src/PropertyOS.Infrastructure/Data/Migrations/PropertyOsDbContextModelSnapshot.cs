@@ -176,7 +176,7 @@ namespace PropertyOS.Infrastructure.Data.Migrations
 
                     b.ToTable("roles", null, t =>
                         {
-                            t.HasCheckConstraint("CK_roles_SystemRoleOrganization", "(\"OrganizationId\" IS NULL AND \"IsSystemRole\" = TRUE)\r\nOR\r\n(\"OrganizationId\" IS NOT NULL AND \"IsSystemRole\" = FALSE)");
+                            t.HasCheckConstraint("CK_roles_SystemRoleOrganization", "(\"OrganizationId\" IS NULL AND \"IsSystemRole\" = TRUE) OR (\"OrganizationId\" IS NOT NULL AND \"IsSystemRole\" = FALSE)");
                         });
                 });
 
