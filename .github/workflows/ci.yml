@@ -1,15 +1,26 @@
-﻿name: CI
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+# The default GITHUB_TOKEN only needs to read the repository.
+permissions:
+  contents: read
+
+# A newer push to the same PR cancels the run in progress; main always finishes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   backend:
-    name: Backend (.NET)
+    name: Backend (.NET and PostgreSQL tests)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -28,6 +39,13 @@ jobs:
       - name: Build
         run: dotnet build PropertyOS.sln --no-restore --configuration Release
 
+      # The integration tests start a PostgreSQL 17 container with Testcontainers,
+      # build the schema from the EF migrations and supabase/ scripts, and run the
+      # API as the least-privilege propertyos_api role. GitHub's Ubuntu runners
+      # include Docker, so no separate Postgres service is needed.
+      - name: Check Docker
+        run: docker version
+
       - name: Test
         run: dotnet test PropertyOS.sln --no-build --configuration Release --logger "trx" --results-directory TestResults
 
@@ -38,9 +56,10 @@ jobs:
           name: dotnet-test-results
           path: TestResults
 
-  frontend:
-    name: Frontend (Next.js)
+  web:
+    name: Web (Next.js)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: apps/web
@@ -62,10 +81,69 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
       - name: Build
         run: npm run build
         env:
-          # Build-time only — no real credentials needed to prove the app
+          # Build-time only: no real credentials are needed to prove the app
           # compiles and prerenders. Real values live in Vercel/deploy env vars.
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+
+  mobile:
+    name: Mobile (Expo)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/mobile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: apps/mobile/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Proves the native bundles compile. The web export is deliberately not
+      # run: it currently fails with "localStorage is not defined" during static
+      # rendering (known issue, predates this workflow).
+      - name: Bundle check (Android and iOS)
+        run: |
+          npx expo export --platform android --output-dir "$RUNNER_TEMP/expo-android"
+          npx expo export --platform ios --output-dir "$RUNNER_TEMP/expo-ios"
+        env:
+          EXPO_NO_TELEMETRY: "1"
+
+  # One stable name to mark as the required status check in branch protection,
+  # so adding or renaming jobs above never means editing the protection rule.
+  ci-passed:
+    name: CI passed
+    if: always()
+    needs: [backend, web, mobile]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any job failed or was cancelled
+        run: |
+          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "true" ]; then
+            echo "One or more CI jobs failed."
+            exit 1
+          fi
